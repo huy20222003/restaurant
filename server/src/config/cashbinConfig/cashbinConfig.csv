@@ -31,18 +31,18 @@ p, employee, /api/v1/category/delete-category/:_id, DELETE
 p, employee, /api/v1/category/add-product, PATCH
 
 #employee router
-p, admin, /api/employee, GET
-p, admin, /api/employee/:_id, GET
-p, admin, /api/employee/create-emloyee, POST
-p, admin, /api/employee/update-employee/:_id, PUT
-p, admin, /api/employee/delete-employee/:_id, DELETE
-p, admin, /api/employee/update-employee/password, PATCH
-p, admin, /api/employee/update-employee/avatar, PATCH
+p, admin, /api/v1/employee, GET
+p, admin, /api/v1/employee/:_id, GET
+p, admin, /api/v1/employee/create-emloyee, POST
+p, admin, /api/v1/employee/update-employee/:_id, PUT
+p, admin, /api/v1/employee/delete-employee/:_id, DELETE
+p, admin, /api/v1/employee/update-employee/password, PATCH
+p, admin, /api/v1/employee/update-employee/avatar, PATCH
 
-p, employee, /api/employee, GET
-p, employee, /api/employee/:_id, GET
-p, employee, /api/employee/update-employee/password, PATCH
-p, employee, /api/employee/update-employee/avatar, PATCH
+p, employee, /api/v1/employee, GET
+p, employee, /api/v1/employee/:_id, GET
+p, employee, /api/v1/employee/update-employee/password, PATCH
+p, employee, /api/v1/employee/update-employee/avatar, PATCH
 
 #order router
 p, admin, /api/v1/order, GET
@@ -66,6 +66,6 @@ p, employee, /api/v1/user/:_id, GET
 p, employee, /api/v1/user/create-user, POST
 p, employee, /api/v1/user/delete-user/:_id, DELETE
 
-p, user, /api/user/update-user/avatar, PATCH
-p, user, /api/user/update-user/detail, PUT
-p, user, /api/user/update-user/password, PATCH
+p, user, /api/v1/user/update-user/avatar, PATCH
+p, user, /api/v1/user/update-user/detail, PUT
+p, user, /api/v1/user/update-user/password, PATCH
