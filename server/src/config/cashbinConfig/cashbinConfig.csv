@@ -38,15 +38,11 @@ p, admin, /api/v1/employee/update-employee/:_id, PUT
 p, admin, /api/v1/employee/delete-employee/:_id, DELETE
 p, admin, /api/v1/employee/update-employee/password, PATCH
 p, admin, /api/v1/employee/update-employee/avatar, PATCH
-p, admin, /api/v1/employee/update-employee/detail, PUT
-p, admin, /api/v1/employee/update-employee/role, PATCH
 
-p, employee, /api/v1/employee, GET
-p, employee, /api/v1/employee/:_id, GET
-p, employee, /api/v1/employee/update-employee/password, PATCH
-p, employee, /api/v1/employee/update-employee/avatar, PATCH
-p, employee, /api/v1/employee/update-employee/detail, PUT
-
+p, employee, /api/employee, GET
+p, employee, /api/employee/:_id, GET
+p, employee, /api/employee/update-employee/password, PATCH
+p, employee, /api/employee/update-employee/avatar, PATCH
 
 #order router
 p, admin, /api/v1/order, GET
@@ -78,16 +74,7 @@ p, user, /api/v1/user/update-user/avatar, PATCH
 p, user, /api/v1/user/update-user/detail, PUT
 p, user, /api/v1/user/update-user/password, PATCH
 
-#payment router
-
-p, admin, /api/v1/payment, GET
-
-p, employee, /api/v1/payment, GET
-
-p, user, /api/v1/payment/create-payment, POST
-p, user, /api/v1/payment/create-payment-vnpay, POST
-p, user, /api/v1/payment/vnpay-ipn, GET
-p, user, /api/v1/payment/vnpay-return, GET
-
 #role router
 p, admin, /api/v1/role, GET
+
+p, employee, /api/v1/role, GET
