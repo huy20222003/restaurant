@@ -2,7 +2,6 @@ import { createContext, useCallback, useEffect, useReducer } from 'react';
 import Cookies from 'js-cookie';
 import { initStateAuth, reducer } from '../Reducers/AuthReducer/reducer';
 import { setAuth } from '../Reducers/AuthReducer/action';
-import setAuthToken from '../utils/setAuthToken';
 import authApi from '../Service/authApi';
 
 export const AuthContext = createContext();
@@ -29,8 +28,6 @@ export const AuthProvider = (prop) => {
         setAuthenticatedUser(false, null);
         return;
       }
-
-      setAuthToken(accessToken);
       let response;
 
       if (!window.location.href.includes('admin')) {
@@ -39,11 +36,10 @@ export const AuthProvider = (prop) => {
         response = await authApi.accountAdmin();
       }
       if (response.data.success) {
-        setAuthenticatedUser(true, response.data.user);
+        setAuthenticatedUser(response.data.success, response.data.user);
       } else {
         setAuthenticatedUser(false, null);
         Cookies.remove('user');
-        setAuthToken(null);
       }
     } catch (error) {
       setAuthenticatedUser(false, null);
@@ -53,6 +49,8 @@ export const AuthProvider = (prop) => {
   useEffect(() => {
     loadUser();
   }, [loadUser]);
+
+  console.log(authState.isAuthenticated);
 
   const registerUser = async (registerForm) => {
     try {

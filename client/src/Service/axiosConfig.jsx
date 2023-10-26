@@ -1,8 +1,10 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
+//----------------------------------------------
 
 const axiosConfig = axios.create({
-  baseURL: 'https://restaurant-vh35.onrender.com/api/v1',
+  baseURL: 'http://localhost:3000/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -20,6 +22,7 @@ axiosConfig.interceptors.request.use((config) => {
 axiosConfig.interceptors.response.use(
   (response) => response,
   async (error) => {
+    const navigate = useNavigate();
     if (error.response && error.response.status === 401) {
       const refreshToken = Cookies.get('refresh');
       if (refreshToken) {
@@ -49,20 +52,14 @@ axiosConfig.interceptors.response.use(
           return axios.request(error.config);
         } catch (refreshError) {
           console.error('Lỗi khi làm mới token:', refreshError);
-          Cookies.remove('refresh');
-          if (window.location.href.includes('admin')) {
-            location.replace('/auth/admin/login');
-          } else {
-            location.replace('/auth/login');
-          }
         }
       } else {
         Cookies.remove('user');
         Cookies.remove('refresh');
         if (window.location.href.includes('admin')) {
-          location.replace('/auth/admin/login');
+          navigate('/auth/admin/login');
         } else {
-          location.replace('/auth/login');
+          navigate('/auth/login');
         }
       }
     }

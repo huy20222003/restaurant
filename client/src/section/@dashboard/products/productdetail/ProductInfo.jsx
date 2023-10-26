@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -12,7 +12,6 @@ import {
   Typography,
 } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { toast } from 'react-toastify';
 //component
 import Label from '../../../../Components/User/label';
 import ProductQuantity from './ProductQuantity';
@@ -20,6 +19,8 @@ import ProductRating from '../ProductRating';
 //ulti
 import { fCurrency } from '../../../../utils/formatNumber';
 import { useProduct, useCart } from '../../../../hooks/context';
+//sweetalert
+import Swal from 'sweetalert2';
 //-------------------------------------------------------------
 
 const ProductInfo = ({ product }) => {
@@ -39,13 +40,23 @@ const ProductInfo = ({ product }) => {
         property,
       });
       if (updateData.success) {
-        toast.success('Add to cart successful');
+        Swal.fire({
+          title: 'Success',
+          icon: 'success',
+          showCancelButton: true,
+          text: 'Add to cart success',
+          confirmButtonText:
+            '<a href="/dashboard/cart" style="color: #fff; text-decoration: none;">Go to Cart page</a>',
+          cancelButtonText:
+            '<a href="/dashboard/products" style="color: #fff; text-decoration: none;">Continue Shopping</a>',
+          cancelButtonColor: 'error',
+        });
       } else {
-        toast.error('Add to cart failed!');
+        Swal.fire('', 'Add to cart failed!', 'error');
       }
       setQuantity(1);
     } catch (error) {
-      toast.error('Server Error');
+      Swal.fire('', 'Server Error', 'error');
     }
   }, [handleUpdateCart, product?._id, property, quantity, setQuantity]);
 
@@ -61,6 +72,12 @@ const ProductInfo = ({ product }) => {
       </MenuItem>
     ));
   };
+
+  const hasColor = product?.color && product.color.length > 0;
+  const hasSize = product?.size && product.size.length > 0;
+
+  const [isColorSelected, setColorSelected] = useState(false);
+  const [isSizeSelected, setSizeSelected] = useState(false);
 
   return (
     <Box component="div" paddingLeft={{ xs: 0, sm: '2rem', md: '2rem' }}>
@@ -102,7 +119,7 @@ const ProductInfo = ({ product }) => {
         </Typography>
         <ProductQuantity />
       </Stack>
-      {product?.color.length > 0 ? (
+      {hasColor ? (
         <Stack
           sx={{
             flexDirection: 'row',
@@ -119,21 +136,20 @@ const ProductInfo = ({ product }) => {
               label="Colors"
               size="small"
               value={property.color || ''}
-              onChange={(e) =>
+              onChange={(e) => {
                 setProperty({
                   ...property,
                   color: e.target.value,
-                })
-              }
+                });
+                setColorSelected(true);
+              }}
             >
               {renderSelectOptions(product?.color || [])}
             </Select>
           </FormControl>
         </Stack>
-      ) : (
-        ''
-      )}
-      {product?.size.length > 0 ? (
+      ) : null}
+      {hasSize ? (
         <Stack
           sx={{
             flexDirection: 'row',
@@ -150,20 +166,19 @@ const ProductInfo = ({ product }) => {
               label="Size"
               size="small"
               value={property.size || ''}
-              onChange={(e) =>
+              onChange={(e) => {
                 setProperty({
                   ...property,
                   size: e.target.value,
-                })
-              }
+                });
+                setSizeSelected(true);
+              }}
             >
               {renderSelectOptions(product?.size || [])}
             </Select>
           </FormControl>
         </Stack>
-      ) : (
-        ''
-      )}
+      ) : null}
       <Box sx={{ my: '1rem' }}>
         <Button
           size="medium"
@@ -171,10 +186,20 @@ const ProductInfo = ({ product }) => {
           sx={{ mr: '1rem' }}
           onClick={handleUpdate}
           startIcon={<AddShoppingCartIcon />}
+          disabled={
+            (hasColor && !isColorSelected) || (hasSize && !isSizeSelected)
+          }
         >
           Add to cart
         </Button>
-        <Button size="medium" variant="contained" onClick={handleNavigateCart}>
+        <Button
+          size="medium"
+          variant="contained"
+          onClick={handleNavigateCart}
+          disabled={
+            (hasColor && !isColorSelected) || (hasSize && !isSizeSelected)
+          }
+        >
           Buy now
         </Button>
       </Box>

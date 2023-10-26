@@ -12,48 +12,56 @@ import {
   Typography,
 } from '@mui/material';
 //context
-import { useAuth, useUser } from '../../../hooks/context';
-import { useCallback, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useAuth, useEmployee } from '../../../hooks/context';
+//yup
+import * as yup from 'yup';
+//formik
+import { useFormik } from 'formik';
+//sweetalert
+import Swal from 'sweetalert2';
 //-----------------------------------------------
 
 const ProfileCardInfo = () => {
   const {
     authState: { user },
   } = useAuth();
-  const { handleUpdateDetail } = useUser();
-  const [updateForm, setUpdateForm] = useState({
-    fullName: user?.fullName || '',
-    username: user?.username || '',
-    email: user?.email || '',
-    phoneNumber: user?.phoneNumber || '',
-    shipAddress: user?.shipAddress || '',
-    address: user?.address || '',
-  });
-
-  const handleChange = useCallback((e) => {
-    setUpdateForm((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-  }, []);
-
-
-  const handleSubmit = useCallback(async()=> {
-    try {
-      const updateData = await handleUpdateDetail(updateForm);
-      if(updateData.success) {
-        toast.success('Update successful');
-      } else {
-        toast.error('Update faield!');
+  const { handleUpdateDetail } = useEmployee();
+  const formik = useFormik({
+    initialValues: {
+      fullName: user?.fullName || '',
+      username: user?.username || '',
+      email: user?.email || '',
+      phoneNumber: user?.phoneNumber || '',
+      shipAddress: user?.shipAddress || '',
+      address: user?.address || '',
+    },
+    validationSchema: yup.object({
+      fullName: yup
+        .string()
+        .required('Fullname is required')
+        .max(200, 'Maximum characters are 200'),
+      username: yup
+        .string()
+        .required('Username is required')
+        .max(100, 'Maximum characters are 100'),
+      email: yup.string().email('Invalid email').required('Email is required'),
+      phoneNumber: yup.string().max(10, 'Maximum characters are 10'),
+      shipAddress: yup.string().max(2000, 'Maximum characters are 2000'),
+      address: yup.string().max(2000, 'Maximum characters are 2000'),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const updateData = await handleUpdateDetail(values);
+        if (updateData.success) {
+          Swal.fire('', 'Update success', 'success')
+        } else {
+          Swal.fire('', 'Update failed', 'error');
+        }
+      } catch (error) {
+        Swal.fire('', 'Server Error', 'error');
       }
-    } catch (error) {
-      toast.error('Server Error');
-    }
-  }, [handleUpdateDetail, updateForm]);
-
-  const { fullName, username, email, phoneNumber, shipAddress, address } =
-    updateForm;
+    },
+  });
 
   return (
     <Box component="form" noValidate autoComplete="off">
@@ -70,8 +78,9 @@ const ProfileCardInfo = () => {
                   required
                   name="fullName"
                   label="Fullname"
-                  value={fullName}
-                  onChange={handleChange}
+                  {...formik.getFieldProps('fullName')}
+                  error={!!(formik.touched.fullName && formik.errors.fullName)}
+                  helperText={formik.touched.fullName && formik.errors.fullName}
                   fullWidth
                 />
               </Grid>
@@ -80,8 +89,9 @@ const ProfileCardInfo = () => {
                   required
                   name="username"
                   label="Username"
-                  value={username}
-                  onChange={handleChange}
+                  {...formik.getFieldProps('username')}
+                  error={!!(formik.touched.username && formik.errors.username)}
+                  helperText={formik.touched.username && formik.errors.username}
                   fullWidth
                 />
               </Grid>
@@ -90,8 +100,9 @@ const ProfileCardInfo = () => {
                   required
                   name="email"
                   label="Email"
-                  value={email}
-                  onChange={handleChange}
+                  {...formik.getFieldProps('email')}
+                  error={!!(formik.touched.email && formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
                   fullWidth
                 />
               </Grid>
@@ -100,18 +111,13 @@ const ProfileCardInfo = () => {
                   required
                   name="phoneNumber"
                   label="Phone Number"
-                  value={phoneNumber}
-                  onChange={handleChange}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <TextField
-                  required
-                  name="shipAddress"
-                  label="Ship Address"
-                  value={shipAddress}
-                  onChange={handleChange}
+                  {...formik.getFieldProps('phoneNumber')}
+                  error={
+                    !!(formik.touched.phoneNumber && formik.errors.phoneNumber)
+                  }
+                  helperText={
+                    formik.touched.phoneNumber && formik.errors.phoneNumber
+                  }
                   fullWidth
                 />
               </Grid>
@@ -120,8 +126,9 @@ const ProfileCardInfo = () => {
                   required
                   name="address"
                   label="Address"
-                  value={address}
-                  onChange={handleChange}
+                  {...formik.getFieldProps('address')}
+                  error={!!(formik.touched.address && formik.errors.address)}
+                  helperText={formik.touched.address && formik.errors.address}
                   fullWidth
                 />
               </Grid>
@@ -130,7 +137,7 @@ const ProfileCardInfo = () => {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button size="medium" variant="contained" onClick={handleSubmit}>
+          <Button size="medium" variant="contained" type='submit' onClick={formik.handleSubmit}>
             Save Detail
           </Button>
         </CardActions>

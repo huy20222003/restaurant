@@ -7,6 +7,7 @@ import cashbinMiddleware from '../middleware/cashbinMiddleware.mjs';
 
 const router = express.Router();
 
+router.patch('/update-order/:_id', authVerify, cashbinMiddleware, OrdersController.updateOrder);
 router.get('/filter-order', OrdersController.filterOrderByStatus);
 router.get('/getAllById', authVerify, cashbinMiddleware, OrdersController.getAllOrdersById);
 router.get('/', authVerify, cashbinMiddleware, OrdersController.getAllOrders);

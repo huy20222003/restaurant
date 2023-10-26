@@ -1,128 +1,56 @@
-import { useNavigate } from 'react-router-dom';
-//mui
-import {
-  Avatar,
-  Button,
-  CssBaseline,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Link,
-  Box,
-  Grid,
-  Typography,
-  Container,
-} from '@mui/material';
-//mui icon
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-//cookie
-import Cookies from 'js-cookie';
-//context
-import {useAuth} from '../../../../hooks/context';
-//sweetalert
-import Swal from 'sweetalert2';
-//-----------------------------------------------------------------------------
-
-const defaultTheme = createTheme();
+//@mui
+import { Box, Unstable_Grid2 as Grid } from '@mui/material';
+//component
+import { LoginForm } from '../../../../section/admin/auth';
+//------------------------------------------
 
 const AdminLogin = () => {
-  document.title = 'Login';
-    const { loginAdmin, loadUser } = useAuth();
-    const navigate = useNavigate();
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      const data = new FormData(e.target);
-      const loginForm = {
-        username: data.get('username'),
-        password: data.get('password'),
-      };
-      try {
-        const loginData = await loginAdmin(loginForm);
-        if (!loginData.success) {
-          Swal.fire('Failed', 'Login Failed', 'error');
-        } else {
-          const expiration = new Date();
-          expiration.setTime(expiration.getTime() + 15 * 60 * 1000);
-          Cookies.set('user', loginData.accessToken, { expires: expiration });
-          Cookies.set('refresh', loginData.refreshToken, { expires: 365 });
-          await loadUser();
-          Swal.fire('Successful', 'Login Successful', 'success');
-          navigate('/admin');
-        }
-      } catch (error) {
-        Swal.fire('Error', 'Server Error', 'error');
-      }
-    };
-
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
+    <Box
+      component="main"
+      sx={{
+        display: 'flex',
+        flex: '1 1 auto',
+      }}
+    >
+      <Grid container sx={{ flex: '1 1 auto' }}>
+        <Grid
+          xs={12}
+          lg={6}
           sx={{
-            marginTop: 8,
+            backgroundColor: 'background.paper',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            position: 'relative',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Admin Sign in
-          </Typography>
           <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, height: 30 }}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-            </Grid>
+            component="header"
+            sx={{
+              left: 0,
+              p: 3,
+              position: 'fixed',
+              top: 0,
+              width: '100%',
+            }}
+          ></Box>
+          <LoginForm />
+        </Grid>
+        <Grid
+          xs={12}
+          lg={6}
+          sx={{
+            alignItems: 'center',
+            // background:
+            //   'radial-gradient(50% 50% at 50% 50%, #122647 0%, #090E23 100%)',
+          }}
+        >
+          <Box sx={{ p: 3 }}>
+            <img alt="" src="/assets/illustrations/illustration_login_admin.svg" />
           </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

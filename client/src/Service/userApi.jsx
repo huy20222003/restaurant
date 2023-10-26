@@ -28,6 +28,10 @@ const userApi = {
     updatePassword: (data)=> {
         const url = 'user/update-user/password';
         return axiosConfig.patch(url, data);
+    },
+    updateRole: (data)=> {
+        const url = 'user/update-user/role';
+        return axiosConfig.patch(url, data);
     }
 }
 

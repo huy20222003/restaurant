@@ -10,12 +10,14 @@ const Users = new Schema(
     fullName: {
       type: String,
       default: '',
+      maxLength: 200,
       required: true,
       trim: true,
     },
     username: {
       type: String,
       default: '',
+      maxLength: 100,
       required: true,
       trim: true,
       unique: true,
@@ -29,20 +31,22 @@ const Users = new Schema(
     },
     phoneNumber: {
       type: String,
-      default: '',
+      default: null,
       trim: true,
     },
     shipAddress: {
       type: String,
       default: '',
+      maxLength: 3000,
     },
     address: {
       type: String,
       default: '',
+      maxLength: 3000,
     },
     password: {
       type: String,
-      default: '1234567',
+      default: '$2a$10$ZD/EROx56XOvcutCg9jHxeXrz.iqMstXUCksTyvBb8gfD8SPPm7uW',
       required: true,
       trim: true,
       minLength: 7,
@@ -55,6 +59,7 @@ const Users = new Schema(
     status: {
       type: String,
       default: 'Verified',
+      required: true,
     },
     roles: {
       type: Schema.Types.ObjectId,

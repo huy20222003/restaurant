@@ -5,7 +5,7 @@ const Products = new Schema(
   {
     name: {
       type: String,
-      maxLength: 250,
+      maxLength: 200,
       required: true,
     },
     subDescription: {
@@ -15,7 +15,6 @@ const Products = new Schema(
     },
     description: {
       type: String,
-      default: '',
       maxLength: 3000,
       required: true,
     },
@@ -25,7 +24,7 @@ const Products = new Schema(
     },
     priceSale: {
       type: Number,
-      default: ''
+      default: 0.0
     },
     status: {
       type: String,
@@ -35,6 +34,7 @@ const Products = new Schema(
     },
     category: {
       type: Schema.Types.ObjectId,
+      ref: 'categorys',
       default: '',
     },
     size: {
@@ -47,7 +47,8 @@ const Products = new Schema(
     },
     quantity: {
       type: Number,
-      default: 0
+      default: 0,
+      required: true,
     },
     image_url: {
       type: Array,
@@ -56,7 +57,7 @@ const Products = new Schema(
     rate: {
       type: Number,
       default: 0,
-    }
+    },
   },
   {
     timestamps: true,

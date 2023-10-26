@@ -2,6 +2,8 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 //@mui
 import { Avatar, Box, Divider, Paper, Stack, Typography } from '@mui/material';
+//util
+import { fDateTime } from '../../../utils/formatTime';
 //---------------------------------------------------------------------------------
 
 const OrderInfo = ({ orderInfo }) => {
@@ -78,8 +80,35 @@ const OrderInfo = ({ orderInfo }) => {
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant='subtitle2'>Method</Typography>
-            <Typography variant='body2'>{orderInfo?.paymentMethod}</Typography>
+            <Typography variant="subtitle2">Method</Typography>
+            <Typography variant="body2">{orderInfo?.paymentMethod}</Typography>
+          </Stack>
+        </Stack>
+        <Stack sx={{ py: '1rem', gap: '12px' }}>
+          <Typography variant="h6">Date</Typography>
+          <Stack
+            sx={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography variant="subtitle2">Order Date</Typography>
+            <Typography variant="body2">
+              {fDateTime(orderInfo?.createdAt)}
+            </Typography>
+          </Stack>
+          <Stack
+            sx={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography variant="subtitle2">Update Date</Typography>
+            <Typography variant="body2">
+              {fDateTime(orderInfo?.updatedAt)}
+            </Typography>
           </Stack>
         </Stack>
       </Stack>
@@ -94,6 +123,8 @@ OrderInfo.propTypes = {
     shippingUnit: PropTypes.string,
     phoneNumber: PropTypes.string,
     paymentMethod: PropTypes.string,
+    createdAt: PropTypes.string,
+    updatedAt: PropTypes.string,
   }),
 };
 

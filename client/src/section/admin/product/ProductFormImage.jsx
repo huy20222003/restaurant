@@ -1,9 +1,16 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useCallback, useState } from 'react';
+//@mui
+import { Box, ButtonBase, Stack, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+//dropzone
 import { useDropzone } from 'react-dropzone';
-import { Box, Stack, Typography } from '@mui/material';
+//--------------------------------------------------
 
-const ProductFormImageItem = ({ imageUrl }) => {
+const ProductFormImageItem = ({ imageUrl, index, handleDeleteImage }) => {
+  const onDeleteImage = () => {
+    handleDeleteImage(index); // Gọi hàm onDelete để xoá ảnh
+  };
   return (
     <Stack
       sx={{
@@ -38,57 +45,74 @@ const ProductFormImageItem = ({ imageUrl }) => {
           }}
         ></Box>
       </Stack>
+      <ButtonBase
+        sx={{
+          position: 'absolute',
+          top: '0.25rem',
+          right: '0.25rem',
+          p: '0.25rem',
+          color: 'rgb(255, 255, 255)',
+          backgroundColor: 'rgba(22, 28, 36, 0.48)',
+          fontSize: '1.125rem',
+          borderRadius: '50%',
+        }}
+        onClick={onDeleteImage}
+      >
+        <CloseIcon sx={{ width: '1rem', height: '1rem' }} />
+      </ButtonBase>
     </Stack>
   );
 };
 
-const ProductFormImage = ({ setProductData }) => {
+const ProductFormImage = ({ formik }) => {
+  const { values, setFieldValue } = formik;
   const [imageUrls, setImageUrls] = useState([]);
 
-  const createImageUrls = useCallback(
-    (files) => {
-      const promises = files.map((file) => {
-        return new Promise((resolve) => {
-          const reader = new FileReader();
+  const createImageUrls = (files) => {
+    const promises = files.map((file) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
 
-          reader.onload = () => {
-            const base64Data = reader.result;
-            resolve(base64Data);
-          };
+        reader.onload = () => {
+          const base64Data = reader.result;
+          resolve(base64Data);
+        };
 
-          reader.readAsDataURL(file);
-        });
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(promises)
+      .then((base64Images) => {
+        setFieldValue('image_url', [...values.image_url, ...base64Images]);
+      })
+      .catch((error) => {
+        console.error('Error converting images to base64:', error);
       });
 
-      Promise.all(promises)
-        .then((base64Images) => {
-          setProductData((prevData) => ({
-            ...prevData,
-            image_url: [...prevData.image_url, ...base64Images],
-          }));
-        })
-        .catch((error) => {
-          console.error('Error converting images to base64:', error);
-        });
+    const validFiles = files.filter((file) => file.type.startsWith('image/'));
+    const urls = validFiles.map((file) => URL.createObjectURL(file));
+    setImageUrls((prevImageUrls) => [...prevImageUrls, ...urls]);
+  };
 
-        const validFiles = files.filter((file) => file.type.startsWith('image/'));
-        const urls = validFiles.map((file) => URL.createObjectURL(file));
-        setImageUrls((prevImageUrls) => [...prevImageUrls, ...urls]);
-    },
-    [setProductData]
-  );
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      createImageUrls(acceptedFiles);
-    },
-    [createImageUrls]
-  );
+  const onDrop = (acceptedFiles) => {
+    createImageUrls(acceptedFiles);
+  };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: 'image/*',
     multiple: true,
   });
+
+  const handleDeleteImage = (index) => {
+    const newImageUrls = [...imageUrls];
+    newImageUrls.splice(index, 1);
+    setImageUrls(newImageUrls);
+    const newImageUrlsInFormik = [...values.image_url];
+    newImageUrlsInFormik.splice(index, 1);
+    setFieldValue('image_url', newImageUrlsInFormik);
+  };
 
   return (
     <>
@@ -125,11 +149,16 @@ const ProductFormImage = ({ setProductData }) => {
                 gap: '0.75rem',
                 alignItems: 'center',
                 flexWrap: 'wrap',
-                flex: 1
+                flex: 1,
               }}
             >
-              {imageUrls.map((imageUrl) => (
-                <ProductFormImageItem key={imageUrl} imageUrl={imageUrl} />
+              {imageUrls.map((imageUrl, index) => (
+                <ProductFormImageItem
+                  key={imageUrl}
+                  imageUrl={imageUrl}
+                  handleDeleteImage={handleDeleteImage}
+                  index={index}
+                />
               ))}
             </Box>
           ) : (
@@ -153,11 +182,13 @@ const dropzoneStyle = {
 };
 
 ProductFormImage.propTypes = {
-  setProductData: PropTypes.func,
+  formik: PropTypes.object,
 };
 
 ProductFormImageItem.propTypes = {
   imageUrl: PropTypes.string,
+  index: PropTypes.number,
+  handleDeleteImage: PropTypes.func,
 };
 
 export default ProductFormImage;

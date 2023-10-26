@@ -13,19 +13,11 @@ import { useCommon } from '../../hooks/context';
 
 //-------------------------------------------------------------
 
-const FormDialogCustomer = ({ fields, formData, setFormData, handleCreate }) => {
+const FormDialogCustomer = ({ fields, formik, handleCreate }) => {
   const { openFormDialog, setOpenFormDialog } = useCommon();
 
   const handleClose = () => {
     setOpenFormDialog(false);
-  };
-
-  const handleFieldChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
   };
 
   return (
@@ -46,8 +38,13 @@ const FormDialogCustomer = ({ fields, formData, setFormData, handleCreate }) => 
                 label={field.label}
                 type={field.type}
                 fullWidth
-                value={formData[field.name] || ''}
-                onChange={handleFieldChange}
+                value={formik.values[field.name] || ''}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched[field.name] && formik.errors[field.name]}
+                helperText={
+                  formik.touched[field.name] && formik.errors[field.name]
+                }
                 required
               />
             );
@@ -80,8 +77,7 @@ FormDialogCustomer.propTypes = {
       row: PropTypes.number,
     })
   ).isRequired,
-  formData: PropTypes.object.isRequired,
-  setFormData: PropTypes.func.isRequired,
+  formik: PropTypes.object,
   handleCreate: PropTypes.func.isRequired,
 };
 

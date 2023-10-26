@@ -30,9 +30,11 @@ import Iconify from '../../../Components/User/iconify';
 import Swal from 'sweetalert2';
 //htmlparse
 import HTMLReactParser from 'html-react-parser';
+//util
+import { fDateTime } from '../../../utils/formatTime';
 //---------------------------------------------------------
 
-const StyledPaper = styled(Paper)(({theme})=> ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
   boxShadow: theme.customShadows.card,
   marginTop: '4rem',
   borderRadius: '0.75rem',
@@ -79,7 +81,20 @@ const ProductManage = () => {
     },
     { field: 'category', headerName: 'Category', type: 'String', width: 160 },
     { field: 'price', headerName: 'Price', type: 'Number', width: 100 },
+    { field: 'priceSale', headerName: 'Price Sale', type: 'Number', width: 100 },
     { field: 'rate', headerName: 'Rate', type: 'Number', width: 70 },
+    {
+      field: 'createdAt',
+      headerName: 'Create Date',
+      type: 'String',
+      width: 200,
+    },
+    {
+      field: 'updatedAt',
+      headerName: 'Update Date',
+      type: 'String',
+      width: 200,
+    },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -154,7 +169,9 @@ const ProductManage = () => {
         ? product.description
         : ''
     );
-    const categoryName = categories.find((item)=> item?._id == product?.category);
+    const categoryName = categories.find(
+      (item) => item?._id == product?.category
+    );
 
     return {
       id: product?._id,
@@ -163,7 +180,10 @@ const ProductManage = () => {
       description: description.props.children,
       category: categoryName?.name,
       price: product?.price,
+      priceSale: product?.priceSale,
       rate: product?.rate,
+      createdAt: fDateTime(product?.createdAt),
+      updatedAt: fDateTime(product?.updatedAt),
     };
   });
 
@@ -205,59 +225,65 @@ const ProductManage = () => {
   return (
     <StyledPaper>
       <Box sx={{ display: 'flex', flex: '1 1 auto', maxWidth: '100%' }}>
-      <Box
-        sx={{
-          display: 'flex',
-          flex: '1 1 auto',
-          width: '100%',
-          flexDirection: 'column',
-        }}
-      >
-        <Box sx={{ flexGrow: 1, py: '2.5rem' }}>
-          <Container maxWidth='xl'>
-            <Stack>
-              <Stack
-                sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: '1rem' }}
-              >
-                <Stack>
-                  <Typography variant="h5" color='primary'>Products</Typography>
-                  <Stack
-                    sx={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      mt: '0.5rem',
-                    }}
-                  >
-                    <ButtonBase sx={{p: '0.2rem'}}>
-                      <Iconify
-                        icon="material-symbols:upload"
-                        sx={{ mr: '0.3rem' }}
-                      />
-                      Upload
-                    </ButtonBase>
-                    <ButtonBase sx={{p: '0.2rem'}}>
-                      <Iconify icon="uil:import" sx={{ mr: '0.3rem' }} />
-                      Export
-                    </ButtonBase>
+        <Box
+          sx={{
+            display: 'flex',
+            flex: '1 1 auto',
+            width: '100%',
+            flexDirection: 'column',
+          }}
+        >
+          <Box sx={{ flexGrow: 1, py: '2.5rem' }}>
+            <Container maxWidth="xl">
+              <Stack>
+                <Stack
+                  sx={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    mb: '1rem',
+                  }}
+                >
+                  <Stack>
+                    <Typography variant="h5" color="primary">
+                      Products
+                    </Typography>
+                    <Stack
+                      sx={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        mt: '0.5rem',
+                      }}
+                    >
+                      <ButtonBase sx={{ p: '0.2rem' }}>
+                        <Iconify
+                          icon="material-symbols:upload"
+                          sx={{ mr: '0.3rem' }}
+                        />
+                        Upload
+                      </ButtonBase>
+                      <ButtonBase sx={{ p: '0.2rem' }}>
+                        <Iconify icon="uil:import" sx={{ mr: '0.3rem' }} />
+                        Export
+                      </ButtonBase>
+                    </Stack>
+                  </Stack>
+                  <Stack sx={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Button
+                      variant="contained"
+                      startIcon={<AddIcon />}
+                      sx={{ borderRadius: '0.375rem' }}
+                      onClick={handleNavigateCreateProductPage}
+                    >
+                      Add
+                    </Button>
                   </Stack>
                 </Stack>
-                <Stack sx={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    sx={{ borderRadius: '0.375rem' }}
-                    onClick={handleNavigateCreateProductPage}
-                  >
-                    Add
-                  </Button>
-                </Stack>
+                <DataTable columns={columns} rows={rows} />
               </Stack>
-              <DataTable columns={columns} rows={rows} />
-            </Stack>
-          </Container>
+            </Container>
+          </Box>
         </Box>
       </Box>
-    </Box>
     </StyledPaper>
   );
 };

@@ -72,20 +72,35 @@ const CartTableItem = ({
   const handleIncrease = useCallback(() => {
     const newQuantity = quantity + 1;
     updateCartItem(newQuantity);
-  
+
     const newTotalPrices = (product?.priceSale || product?.price) * newQuantity;
     setOrderData({ ...orderData, totalPrices: newTotalPrices });
-  }, [orderData, product?.price, product?.priceSale, quantity, setOrderData, updateCartItem]);
+  }, [
+    orderData,
+    product?.price,
+    product?.priceSale,
+    quantity,
+    setOrderData,
+    updateCartItem,
+  ]);
 
   const handleDecrease = useCallback(() => {
     if (quantity > 1) {
       const newQuantity = quantity - 1;
       updateCartItem(newQuantity);
-  
-      const newTotalPrices = (product?.priceSale || product?.price) * newQuantity;
+
+      const newTotalPrices =
+        (product?.priceSale || product?.price) * newQuantity;
       setOrderData({ ...orderData, totalPrices: newTotalPrices });
     }
-  }, [orderData, product?.price, product?.priceSale, quantity, setOrderData, updateCartItem]);
+  }, [
+    orderData,
+    product?.price,
+    product?.priceSale,
+    quantity,
+    setOrderData,
+    updateCartItem,
+  ]);
 
   const handleDeleteProduct = (productId) => {
     Swal.fire({
@@ -140,44 +155,82 @@ const CartTableItem = ({
           <Typography variant="subtitle1" sx={{ fontSize: '0.875rem' }}>
             {product?.name}
           </Typography>
-          {property?.size ? (
-            <Stack
-              sx={{
-                alignItems: 'center',
-                fontWeight: 400,
-                color: 'rgb(99, 115, 129)',
-                flexDirection: 'row',
-              }}
-            >
-              size:
-              <Box
-                component="span"
+          <Stack sx={{ flexDirection: 'row', alignItems: 'center' }}>
+            {property?.size ? (
+              <Stack
                 sx={{
-                  height: '24px',
-                  minWidth: '24px',
-                  lineHeight: '0',
-                  borderRadius: '6px',
-                  cursor: 'default',
                   alignItems: 'center',
-                  whiteSpace: 'nowrap',
-                  display: 'inline-flex',
-                  justifyContent: 'center',
-                  textTransform: 'capitalize',
-                  padding: '0px 6px',
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+                  fontWeight: 400,
                   color: 'rgb(99, 115, 129)',
-                  backgroundColor: 'rgba(145, 158, 171, 0.16)',
-                  marginLeft: '4px',
+                  flexDirection: 'row',
                 }}
               >
-                {property?.size}
-              </Box>
-            </Stack>
-          ) : (
-            ''
-          )}
+                size:
+                <Box
+                  component="span"
+                  sx={{
+                    height: '24px',
+                    minWidth: '24px',
+                    lineHeight: '0',
+                    borderRadius: '6px',
+                    cursor: 'default',
+                    alignItems: 'center',
+                    whiteSpace: 'nowrap',
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    padding: '0px 6px',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+                    color: 'rgb(99, 115, 129)',
+                    backgroundColor: 'rgba(145, 158, 171, 0.16)',
+                    marginLeft: '4px',
+                  }}
+                >
+                  {property?.size}
+                </Box>
+              </Stack>
+            ) : (
+              ''
+            )}
+            {property?.color ? (
+              <Stack
+                sx={{
+                  alignItems: 'center',
+                  fontWeight: 400,
+                  color: 'rgb(99, 115, 129)',
+                  flexDirection: 'row',
+                }}
+              >
+                color:
+                <Box
+                  component="span"
+                  sx={{
+                    height: '24px',
+                    minWidth: '24px',
+                    lineHeight: '0',
+                    borderRadius: '6px',
+                    cursor: 'default',
+                    alignItems: 'center',
+                    whiteSpace: 'nowrap',
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    padding: '0px 6px',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+                    color: 'rgb(99, 115, 129)',
+                    backgroundColor: 'rgba(145, 158, 171, 0.16)',
+                    marginLeft: '4px',
+                  }}
+                >
+                  {property?.color}
+                </Box>
+              </Stack>
+            ) : (
+              ''
+            )}
+          </Stack>
         </Stack>
       </TableCell>
       <TableCell>

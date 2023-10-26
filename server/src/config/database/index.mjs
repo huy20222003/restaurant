@@ -5,7 +5,7 @@ import { connect } from 'mongoose';
 async function connectDB() {
   try {
     connect(
-      process.env.MONGOALATS_URI,
+      `mongodb://127.0.0.1/restaurant`,
       {
         useNewUrlParser: true
       }

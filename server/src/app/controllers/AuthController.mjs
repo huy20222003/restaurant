@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import Roles from '../models/Roles.mjs';
 import Carts from '../models/Carts.mjs';
+import { validationResult } from 'express-validator';
+//---------------------------------------
 
 dotenv.config();
 
@@ -31,14 +33,21 @@ class AuthController {
   }
 
   async register(req, res) {
-    const { fullName, username, email, password } = req.body;
-    if (!username || !fullName || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide all required information.',
-      });
-    }
     try {
+      const { fullName, username, email, password, avatar, phoneNumber } =
+        req.body;
+
+      // Validation
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Validation failed',
+          errors: errors.array(),
+        });
+      }
+
+      // Check if username or email already exists
       const existingUser = await Users.findOne({
         $or: [{ username }, { email }],
       });
@@ -48,6 +57,7 @@ class AuthController {
           message: 'Username or email already exists!',
         });
       }
+
       const userRole = await Roles.findOne({ name: 'user' });
 
       const newUser = new Users({
@@ -55,6 +65,8 @@ class AuthController {
         username,
         email,
         password,
+        avatar,
+        phoneNumber,
         roles: userRole._id,
       });
 

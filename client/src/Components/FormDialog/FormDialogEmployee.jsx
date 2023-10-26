@@ -16,25 +16,11 @@ import {
 import { useCommon } from '../../hooks/context';
 //---------------------------------------------------------------------------
 
-const FormDialogEmployee = ({
-  fields,
-  formData,
-  setFormData,
-  handleSave,
-  isEdit,
-}) => {
+const FormDialogEmployee = ({ fields, formik, handleSave, isEdit }) => {
   const { openFormDialog, setOpenFormDialog } = useCommon();
 
   const handleClose = () => {
     setOpenFormDialog(false);
-  };
-
-  const handleFieldChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
   };
 
   return (
@@ -50,13 +36,15 @@ const FormDialogEmployee = ({
                 key={index}
                 autoFocus={index === 0}
                 margin="dense"
-                id={field.name}
-                name={field.name}
-                label={field.label}
-                type={field.type}
+                {...field}
                 fullWidth
-                value={formData[field.name] || ''}
-                onChange={handleFieldChange}
+                value={formik.values[field.name] || ''}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched[field.name] && formik.errors[field.name]}
+                helperText={
+                  formik.touched[field.name] && formik.errors[field.name]
+                }
                 required
               />
             );
@@ -67,9 +55,11 @@ const FormDialogEmployee = ({
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               name="position"
-              value={formData.position || 'employee'}
+              value={formik.values.position || 'employee'}
               label="Vị trí"
-              onChange={handleFieldChange}
+              onChange={formik.handleChange}
+              error={formik.touched.position && formik.errors.position}
+              helperText={formik.touched.position && formik.errors.position}
               sx={{ minWidth: 400 }}
             >
               <MenuItem value={'admin'}>Admin</MenuItem>
@@ -104,8 +94,7 @@ FormDialogEmployee.propTypes = {
       row: PropTypes.number,
     })
   ).isRequired,
-  formData: PropTypes.object.isRequired,
-  setFormData: PropTypes.func.isRequired,
+  formik: PropTypes.object,
   handleSave: PropTypes.func.isRequired,
   isEdit: PropTypes.bool.isRequired,
 };

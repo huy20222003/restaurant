@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 //@mui
 import { Card, Grid, Paper, Stack, TextField } from '@mui/material';
+//---------------------------------------------------------------
 
-//-----------------------------------------------------------
-
-const ProductFormDetail = ({ productData, setProductData }) => {
+const ProductFormPrice = ({ formik }) => {
   return (
     <Paper elevation={0} component={Card}>
       <Stack sx={{ gap: '24px', padding: '24px' }}>
@@ -13,22 +12,26 @@ const ProductFormDetail = ({ productData, setProductData }) => {
             <TextField
               name="price"
               label="Regular Price"
+              id='priceSale'
               fullWidth
-              value={productData?.price || ''}
-              onChange={(e) => {
-                setProductData({ ...productData, price: e.target.value });
-              }}
+              value={formik.values.price}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={!!(formik.touched.price && formik.errors.price)}
+              helperText={formik.touched.price && formik.errors.price}
             />
           </Grid>
           <Grid item xs={12} md={6}>
             <TextField
               name="priceSale"
               label="Price Sale"
+              id='priceSale'
               fullWidth
-              value={productData?.priceSale || ''}
-              onChange={(e) => {
-                setProductData({ ...productData, priceSale: e.target.value });
-              }}
+              value={formik.values.priceSale}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={!!(formik.touched.priceSale && formik.errors.priceSale)}
+              helperText={formik.touched.priceSale && formik.errors.priceSale}
             />
           </Grid>
         </Grid>
@@ -37,9 +40,8 @@ const ProductFormDetail = ({ productData, setProductData }) => {
   );
 };
 
-ProductFormDetail.propTypes = {
-  productData: PropTypes.object.isRequired,
-  setProductData: PropTypes.func.isRequired,
+ProductFormPrice.propTypes = {
+  formik: PropTypes.object.isRequired,
 };
 
-export default ProductFormDetail;
+export default ProductFormPrice;

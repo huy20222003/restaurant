@@ -13,6 +13,12 @@ const paymentMethods = [
     description: 'Pay with cash when your order is delivered.',
     icon: 'mdi:cash',
   },
+  {
+    id: 'VNPay',
+    label: 'Pay with VNPay',
+    description: 'Pay with VNPay.',
+    icon: 'arcticons:v-vnpay',
+  },
   
 ];
 

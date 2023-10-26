@@ -10,7 +10,7 @@ import { useOrder } from '../../../hooks/context';
 //------------------------------------------------------
 
 const OrderTab = () => {
-  const [value, setValue] = useState('All');
+  const [value, setValue] = useState('all');
   const { handleFilterOrderByStatus } = useOrder();
 
   const handleChange = (event, newValue) => {
@@ -35,27 +35,31 @@ const OrderTab = () => {
             textColor="secondary"
             indicatorColor="secondary"
           >
-            <Tab value="All" label="All" onClick={handleFilter} />
-            <Tab value="Ordered" label="Ordered" onClick={handleFilter} />
-            <Tab value="Delivering" label="Delivering" onClick={handleFilter} />
-            <Tab value="Delivered" label="Delivered" onClick={handleFilter} />
-            <Tab value="Canceled" label="Canceled" onClick={handleFilter} />
+            <Tab value="all" label="All" onClick={handleFilter} />
+            <Tab value="ordered" label="Ordered" onClick={handleFilter} />
+            <Tab value="confirm" label="Confirm" onClick={handleFilter} />
+            <Tab value="delivering" label="Delivering" onClick={handleFilter} />
+            <Tab value="delivered" label="Delivered" onClick={handleFilter} />
+            <Tab value="canceled" label="Canceled" onClick={handleFilter} />
           </TabList>
         </Paper>
 
-        <TabPanel sx={{ p: '24px 0' }} value="All">
+        <TabPanel sx={{ p: '24px 0' }} value="all">
           <OrderTabPanel />
         </TabPanel>
-        <TabPanel sx={{ p: '24px 0' }} value="Ordered">
+        <TabPanel sx={{ p: '24px 0' }} value="ordered">
           <OrderTabPanel />
         </TabPanel>
-        <TabPanel sx={{ p: '24px 0' }} value="Delivering">
+        <TabPanel sx={{ p: '24px 0' }} value="confirm">
           <OrderTabPanel />
         </TabPanel>
-        <TabPanel sx={{ p: '24px 0' }} value="Delivered">
+        <TabPanel sx={{ p: '24px 0' }} value="delivering">
           <OrderTabPanel />
         </TabPanel>
-        <TabPanel sx={{ p: '24px 0' }} value="Canceled">
+        <TabPanel sx={{ p: '24px 0' }} value="delivered">
+          <OrderTabPanel />
+        </TabPanel>
+        <TabPanel sx={{ p: '24px 0' }} value="canceled">
           <OrderTabPanel />
         </TabPanel>
       </TabContext>

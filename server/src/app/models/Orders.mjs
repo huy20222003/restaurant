@@ -4,46 +4,53 @@ const Orders = new Schema(
   {
     items: {
       type: Array,
+      required: true,
     },
     fullName: {
       type: String,
-      default: '',
+      maxLength: 200,
       required: true,
     },
     shipAddress: {
       type: String,
-      default: '',
+      maxLength: 2000,
       required: true,
     },
     phoneNumber: {
       type: String,
-      default: '',
+      maxLength: 10,
       required: true,
     },
     totalPrices: {
       type: Number,
       default: 0.0,
+      required: true,
     },
     status: {
       type: Array,
-      default: ['ordered'],
+      required: true,
     },
     shippingFee: {
       type: Number,
       default: 0.0,
+      required: true,
     },
     shippingUnit: {
       type: String,
-      default: '',
       required: true,
     },
     paymentMethod: {
       type: String,
-      default: '',
       required: true,
+    },
+    isReview: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     userOrder: {
       type: Schema.Types.ObjectId,
+      required: true,
       ref: "users",
     },
   },

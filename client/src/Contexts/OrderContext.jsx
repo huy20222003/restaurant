@@ -70,7 +70,7 @@ export const OrdersProvider = (prop) => {
 
   const handleFilterOrderByStatus = useCallback(async (status) => {
     try {
-      if (status == 'All') {
+      if (status == 'all') {
         await handleGetAllOrdersById();
       } else {
         const response = await orderApi.filterOrderByStatus(status);
@@ -84,6 +84,16 @@ export const OrdersProvider = (prop) => {
     }
   }, [handleGetAllOrdersById]);
 
+  const handleUpdateOrder = useCallback(async (orderId, status)=> {
+    console.log(orderId)
+    try {
+      const response = await orderApi.updateOrder(orderId, status);
+      return response.data;
+    } catch (error) {
+      return handleError(error);
+    }
+  }, []);
+
   const OrdersData = {
     ordersState,
     handleGetAllOrders,
@@ -91,6 +101,7 @@ export const OrdersProvider = (prop) => {
     handleGetOneOrder,
     handleCreateOrder,
     handleFilterOrderByStatus,
+    handleUpdateOrder,
   };
 
   return (

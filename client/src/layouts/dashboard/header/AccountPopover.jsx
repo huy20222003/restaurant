@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
@@ -11,17 +11,18 @@ import {
   Avatar,
   IconButton,
   Popover,
+  Button,
 } from '@mui/material';
 //context
-import { AuthContext } from '../../../Contexts/AuthContext';
+import { useAuth } from '../../../hooks/context';
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const {
-    authState: { user },
+    authState: { user, isAuthenticated },
     logoutUser,
-  } = useContext(AuthContext);
+  } = useAuth();
   const navigate = useNavigate();
 
   const handleOpen = (event) => {
@@ -37,38 +38,66 @@ export default function AccountPopover() {
     navigate('/auth/login');
   };
 
-  const handleNavigate = (data)=> {
-    if(data == 'dashboard') {
+  const handleNavigate = (data) => {
+    if (data == 'dashboard') {
       navigate('/dashboard/app');
-    } else if(data == 'profile') {
+    } else if (data == 'profile') {
       navigate('/dashboard/profile');
-    } else if(data == 'setting') {
+    } else if (data == 'setting') {
       navigate('/dashboard/setting');
     }
     handleClose();
-  }
+  };
 
   return (
     <>
-      <IconButton
-        onClick={handleOpen}
-        sx={{
-          p: 0,
-          ...(open && {
-            '&:before': {
-              zIndex: 1,
-              content: "''",
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              position: 'absolute',
-              bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8),
-            },
-          }),
-        }}
-      >
-        <Avatar src={user?.avatar} alt="photoURL" />
-      </IconButton>
+      {isAuthenticated ? (
+        <IconButton
+          onClick={handleOpen}
+          sx={{
+            p: 0,
+            ...(open && {
+              '&:before': {
+                zIndex: 1,
+                content: "''",
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                position: 'absolute',
+                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8),
+              },
+            }),
+          }}
+        >
+          <Avatar src={user?.avatar} alt="photoURL" />
+        </IconButton>
+      ) : (
+        <Box>
+          <Stack
+            sx={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '0.75rem',
+              justifyContent: 'center',
+            }}
+          >
+            <Button
+              variant="outlined"
+              size="medium"
+              onClick={() => navigate('/auth/login')}
+            >
+              Login
+            </Button>
+            <Button
+              variant="outlined"
+              size="medium"
+              onClick={() => navigate('/auth/register')}
+            >
+              Register
+            </Button>
+          </Stack>
+        </Box>
+      )}
 
       <Popover
         open={Boolean(open)}
@@ -101,9 +130,11 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Stack sx={{ p: 1 }}>
-          <MenuItem onClick={()=>handleNavigate('dashboard')}>Dashboard</MenuItem>
-          <MenuItem onClick={()=>handleNavigate('profile')}>Profile</MenuItem>
-          <MenuItem onClick={()=>handleNavigate('setting')}>Setting</MenuItem>
+          <MenuItem onClick={() => handleNavigate('dashboard')}>
+            Dashboard
+          </MenuItem>
+          <MenuItem onClick={() => handleNavigate('profile')}>Profile</MenuItem>
+          <MenuItem onClick={() => handleNavigate('setting')}>Setting</MenuItem>
         </Stack>
 
         <Divider sx={{ borderStyle: 'dashed' }} />

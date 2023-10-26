@@ -89,6 +89,16 @@ export const UsersProvider = (prop) => {
     }
   }, [loadUser]);
 
+  const handleUpdateRole = useCallback(async (role) => {
+    try {
+      const response = await userApi.updateRole(role);
+      await loadUser();
+      return response.data;
+    } catch (error) {
+      return handleError(error);
+    }
+  }, [loadUser]);
+
   const UsersContextData = {
     usersState,
     handleGetAllUser,
@@ -98,6 +108,7 @@ export const UsersProvider = (prop) => {
     handleUpdateAvatar,
     handleUpdateDetail,
     handleUpdatePasswordUser,
+    handleUpdateRole,
   };
 
   return (

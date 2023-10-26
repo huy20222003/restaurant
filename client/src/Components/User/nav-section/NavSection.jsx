@@ -15,8 +15,8 @@ export default function NavSection({ data = [], ...other }) {
   return (
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
-        {data.map((item) => (
-          <NavItem key={item.title} item={item} />
+        {data.map((item, index) => (
+          <NavItem key={index} item={item} />
         ))}
       </List>
     </Box>
@@ -26,7 +26,10 @@ export default function NavSection({ data = [], ...other }) {
 // ----------------------------------------------------------------------
 
 NavItem.propTypes = {
-  item: PropTypes.object,
+  item: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.bool,
+  ]),
 };
 
 function NavItem({ item }) {

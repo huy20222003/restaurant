@@ -12,13 +12,15 @@ import { useOrder } from '../../../hooks/context';
 //----------------------------------------------------------
 
 const OrderPageDetail = () => {
-
   const handleBack = () => {
     history.back();
   };
-  
+
   const { _id } = useParams();
-  const { ordersState: {order}, handleGetOneOrder } = useOrder();
+  const {
+    ordersState: { order },
+    handleGetOneOrder,
+  } = useOrder();
   const [orderInfo, setOrderInfo] = useState(order);
 
   useEffect(() => {
@@ -67,11 +69,19 @@ const OrderPageDetail = () => {
                     whiteSpace: 'nowrap',
                     textTransform: 'capitalize',
                     padding: '0px 6px',
-                    color: 'rgb(17, 141, 87)',
-                    backgroundColor: 'rgba(34, 197, 94, 0.16)',
+                    color:
+                      orderInfo.status[orderInfo.status.length - 1] ===
+                      'cancelled'
+                        ? 'error.main'
+                        : 'primary.main',
+                    backgroundColor:
+                      orderInfo.status[orderInfo.status.length - 1] ===
+                      'cancelled'
+                        ? 'error.lighter'
+                        : 'primary.lighter',
                   }}
                 >
-                  {orderInfo.status}
+                  {orderInfo.status[orderInfo.status.length - 1]}
                 </Typography>
               </Stack>
             </Stack>

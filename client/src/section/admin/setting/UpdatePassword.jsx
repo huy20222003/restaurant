@@ -18,40 +18,51 @@ import { useEmployee } from '../../../hooks/context';
 import Swal from 'sweetalert2';
 //component
 import Iconify from '../../../Components/User/iconify';
+//yup
+import * as yup from 'yup';
+//formik
+import {useFormik} from 'formik';
 //---------------------------------------------------------
 
 const UpdatePassword = () => {
   const { handleUpdatePasswordEmployee } = useEmployee();
-  const [updateForm, setUpdateForm] = useState({
-    newPassword: '',
-    confirmNewPassword: '',
-  });
-
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleChange = (e) => {
-    setUpdateForm({ ...updateForm, [e.target.name]: e.target.value });
-  };
-
-  const { newPassword, confirmNewPassword } = updateForm;
-
-  const handleUpdate = async () => {
-    try {
-      if (newPassword !== confirmNewPassword) {
-        Swal.fire('Error', 'Password do not match', 'error');
-      } else {
-        const response = await handleUpdatePasswordEmployee({ newPassword });
-        if (!response.success) {
-          Swal.fire('Failed', 'Update password failed', 'error');
-        } else {
-          Swal.fire('Success', 'Update password success', 'success');
-        }
+  const formik = useFormik({
+    initialValues: {
+      newPassword: '',
+      confirmNewPassword: '',
+    },
+    validationSchema: yup.object({
+      newPassword: yup
+        .string()
+        .required('Password is required')
+        .min(7)
+        .matches(
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=]).{7,}$/,
+          'Minimum password consists of 7 characters, with uppercase letters, lowercase letters, numbers and special characters'
+        ),
+      confirmNewPassword: yup
+        .string()
+        .required('ConfirmPassword is required')
+        .oneOf([yup.ref('newPassword')], 'Password do not match'),
+    }),
+    onSubmit: async (values)=> {
+      try {
+        const response = await handleUpdatePasswordEmployee(values);
+          if (!response.success) {
+            Swal.fire('Failed', 'Update password failed', 'error');
+          } else {
+            Swal.fire('Success', 'Update password success', 'success');
+          }
+       
+      } catch (error) {
+        Swal.fire('Error', 'Server Error', 'error');
       }
-      setUpdateForm({ newPassword: '', confirmNewPassword: '' });
-    } catch (error) {
-      Swal.fire('Error', 'Server Error', 'error');
+    },
+    onReset: ()=> {
+      formik.setValues('');
     }
-  };
+  });
 
   return (
     <form style={{ marginBottom: '1rem' }}>
@@ -81,8 +92,9 @@ const UpdatePassword = () => {
               name="newPassword"
               label="Password"
               fullWidth
-              value={newPassword}
-              onChange={handleChange}
+              {...formik.getFieldProps('newPassword')}
+              error={!!(formik.touched.newPassword && formik.errors.newPassword)}
+              helperText={formik.touched.newPassword && formik.errors.newPassword}
               sx={{ maxWidth: { xs: '100%', sm: '100%', md: '50%' } }}
               type={showPassword ? 'text' : 'password'}
               InputProps={{
@@ -113,8 +125,9 @@ const UpdatePassword = () => {
               name="confirmNewPassword"
               label="Password (Confirm)"
               fullWidth
-              value={confirmNewPassword}
-              onChange={handleChange}
+              {...formik.getFieldProps('confirmNewPassword')}
+              error={!!(formik.touched.confirmNewPassword && formik.errors.confirmNewPassword)}
+              helperText={formik.touched.confirmNewPassword && formik.errors.confirmNewPassword}
               sx={{ maxWidth: { xs: '100%', sm: '100%', md: '50%' } }}
               type={showPassword ? 'text' : 'password'}
               InputProps={{
@@ -155,7 +168,8 @@ const UpdatePassword = () => {
             color="primary"
             variant="contained"
             sx={{ p: '0.5rem 1.25rem' }}
-            onClick={handleUpdate}
+            type='submit'
+            onClick={formik.handleSubmit}
           >
             Save
           </Button>

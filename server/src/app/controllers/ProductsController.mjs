@@ -69,6 +69,7 @@ class ProductsController {
         !price ||
         !description ||
         !status ||
+        !quantity||
         !image_url ||
         image_url.length === 0
       ) {

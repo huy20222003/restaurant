@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 //@mui
 import { Paper, Typography } from '@mui/material';
 //swiper
@@ -5,16 +6,22 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 //component
 import CategoryItem from './CategoryItem';
-//config
-import CategoryConfig from './CategoryConfig';
+//context
+import { useCategory } from '../../../../hooks/context';
 //---------------------------------------------------------
 
 const Category = () => {
   const itemsPerSlide = 8;
 
+  const {categoryState: {categories}, handleGetAllCategory} = useCategory();
+
+  useEffect(()=> {
+    handleGetAllCategory();
+  }, [handleGetAllCategory]);
+
   const categoryChunks = [];
-  for (let i = 0; i < CategoryConfig.length; i += itemsPerSlide) {
-    categoryChunks.push(CategoryConfig.slice(i, i + itemsPerSlide));
+  for (let i = 0; i < categories.length; i += itemsPerSlide) {
+    categoryChunks.push(categories.slice(i, i + itemsPerSlide));
   }
 
   return (
@@ -49,7 +56,7 @@ const Category = () => {
                   <CategoryItem
                     key={category.id}
                     name={category.name}
-                    image={category.image}
+                    image={category.imageUrl}
                   />
                 ))}
               </div>

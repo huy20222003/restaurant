@@ -1,21 +1,39 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 //@mui
-import { Box, Divider, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Paper, Stack, Typography } from '@mui/material';
 //component
 import OrderTimeLine from './OrderTimeLine';
+//context
+import { useOrder } from '../../../hooks/context';
+//sweetalert
+import Swal from 'sweetalert2';
 //-------------------------------------------------
 
 const OrderDetail = ({ orderInfo }) => {
+  const { handleUpdateOrder } = useOrder();
+  const { _id } = useParams();
+  const handleUpdate = useCallback(
+    async (type) => {
+      if (!type) {
+        return;
+      }
+
+      const response = await handleUpdateOrder(_id, { status: type });
+      if (!response.success) {
+        Swal.fire('', `${type} failed`, 'error');
+      } else {
+        Swal.fire('', `${type} success`, 'success');
+      }
+    },
+    [_id, handleUpdateOrder]
+  );
   if (!orderInfo) {
     return null;
   }
 
-  const {
-    items,
-    totalPrices,
-    shippingFee,
-  } = orderInfo;
+  const { items, totalPrices, shippingFee, status } = orderInfo;
 
   return (
     <Box>
@@ -40,7 +58,7 @@ const OrderDetail = ({ orderInfo }) => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    my: '1rem'
+                    my: '1rem',
                   }}
                 >
                   <Box sx={{ display: 'flex' }}>
@@ -82,7 +100,13 @@ const OrderDetail = ({ orderInfo }) => {
                       <Typography variant="body2">
                         {item?.product?.name}
                       </Typography>
-                      <Stack sx={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Stack
+                        sx={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                      >
                         {item?.property?.size && (
                           <Typography
                             variant="caption"
@@ -96,7 +120,7 @@ const OrderDetail = ({ orderInfo }) => {
                             variant="caption"
                             sx={{ color: 'rgb(128, 128, 137)' }}
                           >
-                            màu: {item?.property?.color}
+                            color: {item?.property?.color}
                           </Typography>
                         )}
                       </Stack>
@@ -123,7 +147,9 @@ const OrderDetail = ({ orderInfo }) => {
                 }}
               >
                 <Typography variant="subtitle2">Sub Total:</Typography>
-                <Typography variant="subtitle2">{parseFloat(totalPrices-shippingFee)}</Typography>
+                <Typography variant="subtitle2">
+                  {parseFloat(totalPrices - shippingFee)}
+                </Typography>
               </Stack>
               <Stack
                 sx={{
@@ -171,6 +197,38 @@ const OrderDetail = ({ orderInfo }) => {
                   {parseFloat(totalPrices)}
                 </Typography>
               </Stack>
+              {status[0] !== 'return' ? (
+                <Stack
+                  sx={{
+                    flexDirection: 'row',
+                    gap: '0.75rem',
+                    alignItems: 'center',
+                    pt: '1rem',
+                  }}
+                >
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    disabled={Array.isArray(orderInfo) && orderInfo.length > 0 && orderInfo[orderInfo.length - 1] === 'Confirm'}
+                    onClick={() => handleUpdate('return')}
+                  >
+                    Return
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled
+                    //disabled={Array.isArray(orderInfo) && orderInfo.length > 0 && orderInfo[orderInfo.length - 1] === 'confirm'}
+                    onClick={() => handleUpdate('delivered')}
+                  >
+                    Delivered
+                  </Button>
+                </Stack>
+              ) : (
+                <Button variant="outlined" color="error">
+                  Cancelled
+                </Button>
+              )}
             </Stack>
           </Box>
         </Box>
@@ -210,7 +268,7 @@ OrderDetail.propTypes = {
     ),
     totalPrices: PropTypes.number,
     shippingFee: PropTypes.number,
-    status: PropTypes.array
+    status: PropTypes.array,
   }),
 };
 

@@ -13,16 +13,24 @@ import {
   TextField,
 } from '@mui/material';
 //context
-import { useCategory} from '../../../hooks/context';
-
+import { useCategory } from '../../../hooks/context';
 //-----------------------------------------------------------
 
-const ProductFormProperty = ({ productData, setProductData }) => {
+const ProductFormProperty = ({ formik }) => {
   const {
-    categoryState: { categories }, handleGetAllCategory
+    values,
+    handleChange,
+    errors,
+    touched,
+    handleBlur
+  } = formik;
+
+  const {
+    categoryState: { categories },
+    handleGetAllCategory,
   } = useCategory();
 
-  useEffect(()=> {
+  useEffect(() => {
     handleGetAllCategory();
   }, [handleGetAllCategory]);
 
@@ -34,22 +42,6 @@ const ProductFormProperty = ({ productData, setProductData }) => {
     ));
   };
 
-  const handleSizeChange = (e) => {
-    const newSize = e.target.value.split('\n').map((size) => size.trim());
-    setProductData({
-      ...productData,
-      size: newSize,
-    });
-  };
-
-  const handleColorChange = (e) => {
-    const newColor = e.target.value.split('\n').map((color) => color.trim());
-    setProductData({
-      ...productData,
-      color: newColor,
-    });
-  };
-
   return (
     <>
       <Paper elevation={0} component={Card}>
@@ -57,22 +49,23 @@ const ProductFormProperty = ({ productData, setProductData }) => {
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                <InputLabel id="status">Status</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
+                  labelId="status"
+                  id="status"
                   label="Status"
-                  value={productData.status}
-                  onChange={(e) =>
-                    setProductData({
-                      ...productData,
-                      status: e.target.value,
-                    })
-                  }
+                  name="status"
+                  error={!!(touched.status && errors.status)}
+                  onBlur={handleBlur}
+                  value={values.status}
+                  onChange={handleChange}
                 >
                   <MenuItem value="new">New</MenuItem>
                   <MenuItem value="sale">Sale</MenuItem>
                 </Select>
+                {touched.status && errors.status && (
+                  <span style={{ color: 'red' }}>{errors.status}</span>
+                )}
               </FormControl>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -80,32 +73,31 @@ const ProductFormProperty = ({ productData, setProductData }) => {
                 name="quantity"
                 label="Quantity"
                 fullWidth
-                value={productData?.quantity || ''}
-                onChange={(e) =>
-                  setProductData({
-                    ...productData,
-                    quantity: e.target.value,
-                  })
-                }
+                value={values.quantity}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={!!(touched.quantity && errors.quantity)}
+                helperText={touched.quantity && errors.quantity}
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                <InputLabel id="category">Category</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
+                  labelId="category"
+                  id="category"
                   label="Category"
-                  value={productData?.category || ''}
-                  onChange={(e) =>
-                    setProductData({
-                      ...productData,
-                      category: e.target.value,
-                    })
-                  }
+                  name="category"
+                  value={values.category}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={!!(touched.category && errors.category)}
                 >
                   {renderCategories()}
                 </Select>
+                {touched.category && errors.category && (
+                  <span style={{ color: 'red' }}>{errors.category}</span>
+                )}
               </FormControl>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -115,8 +107,11 @@ const ProductFormProperty = ({ productData, setProductData }) => {
                 fullWidth
                 multiline
                 rows={3}
-                value={productData?.size.join('\n') || ''}
-                onChange={handleSizeChange}
+                value={values.size}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={!!(touched.size && errors.size)}
+                helperText={touched.size && errors.size}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -126,8 +121,11 @@ const ProductFormProperty = ({ productData, setProductData }) => {
                 fullWidth
                 multiline
                 rows={3}
-                value={productData?.color.join('\n') || ''}
-                onChange={handleColorChange}
+                value={values.color}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={!!(touched.color && errors.color)}
+                helperText={touched.color && errors.color}
               />
             </Grid>
           </Grid>
@@ -138,8 +136,7 @@ const ProductFormProperty = ({ productData, setProductData }) => {
 };
 
 ProductFormProperty.propTypes = {
-  productData: PropTypes.object.isRequired,
-  setProductData: PropTypes.func.isRequired,
+  formik: PropTypes.object.isRequired,
 };
 
 export default ProductFormProperty;

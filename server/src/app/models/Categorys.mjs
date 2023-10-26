@@ -11,12 +11,12 @@ const Categorys = new Schema(
     description: {
       type: String,
       maxLength: 3000,
+      default: '',
     },
     imageUrl: {
       type: String,
-      default: '',
       required: true,
-    }
+    },
   },
   {
     timestamps: true,

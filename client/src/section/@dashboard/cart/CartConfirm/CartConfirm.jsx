@@ -7,7 +7,7 @@ import styled from '@emotion/styled';
 import CartConfirmProductItem from './CartConfirmProductItem';
 import Iconify from '../../../../Components/User/iconify';
 //context
-import { useCommon, useOrder } from '../../../../hooks/context';
+import { useCommon, useOrder, usePayment } from '../../../../hooks/context';
 //sweetalert
 import Swal from 'sweetalert2';
 //---------------------------------------------------------------
@@ -38,23 +38,54 @@ const CartConfirm = ({ orderData }) => {
   const navigate = useNavigate();
   const { setActiveStep } = useCommon();
   const { handleCreateOrder } = useOrder();
+  const { handleCreatePayment, handlePaymentWithVnPay } = usePayment();
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleCreate = async () => {
-    try {
-      const createData = await handleCreateOrder(orderData);
-      if (!createData.success) {
-        Swal.fire('Faield', 'Order failed!', 'error');
-      } else {
-        Swal.fire('Success', 'Order Success!', 'success');
-        navigate('/dashboard/cart');
-        setActiveStep(0);
-      }
-    } catch (error) {
-      Swal.fire('Error', 'Server Error', 'error');
+    switch (orderData.paymentMethod) {
+      case 'Cash':
+        try {
+          const createData = await handleCreateOrder(orderData);
+          if (!createData.success) {
+            Swal.fire('Faield', 'Order failed!', 'error');
+          } else {
+            const paymentData = await handleCreatePayment({
+              sender: orderData.fullName,
+              description: `Payment for orderId #${createData.order._id}`,
+              amount: orderData.totalPrices,
+              paymentMethod: orderData.paymentMethod,
+            });
+            if (!paymentData.success) {
+              Swal.fire('Faield', 'Order failed!', 'error');
+            } else {
+              Swal.fire('Success', 'Order Success!', 'success');
+              navigate('/dashboard/cart');
+              setActiveStep(0);
+            }
+          }
+        } catch (error) {
+          Swal.fire('Error', 'Server Error', 'error');
+        }
+        break;
+      case 'VNPay':
+        try {
+          const response = await handlePaymentWithVnPay({
+            amount: orderData.totalPrices,
+            orderInfo: orderData,
+          });
+          const newLink = document.createElement('a');
+          newLink.href = response.url;
+          newLink.target = '_blank';
+          newLink.click();
+        } catch (error) {
+          Swal.fire('Error', 'Server Error', 'error');
+        }
+        break;
+      default:
+        return;
     }
   };
 

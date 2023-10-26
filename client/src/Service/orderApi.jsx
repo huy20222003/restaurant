@@ -20,6 +20,11 @@ const orderApi = {
     filterOrderByStatus: (data)=> {
         const url =`/order/filter-order?status=${data}`;
         return axiosConfig.get(url)
+    },
+    updateOrder: (orderId, data)=> {
+        console.log(orderId)
+        const url = `/order/update-order/${orderId}`;
+        return axiosConfig.patch(url, data);
     }
 }
 

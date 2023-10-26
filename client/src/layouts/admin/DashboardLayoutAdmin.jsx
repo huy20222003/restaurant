@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 //@mui
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
@@ -26,7 +26,7 @@ import {
 } from '../../Components/Admin/ListItem/ListItem';
 import NotificationsPopover from './header/NotificationsPopover';
 //context
-import { AuthContext } from '../../Contexts/AuthContext';
+import { useAuth } from '../../hooks/context';
 //utils
 // utils
 import { bgBlur } from '../../utils/cssStyles';
@@ -104,7 +104,7 @@ const DashboardLayoutAdmin = () => {
   const {
     authState: { user },
     logoutUser,
-  } = useContext(AuthContext);
+  } = useAuth();
 
   const handleLogoutAdmin = () => {
     logoutUser();
@@ -130,7 +130,7 @@ const DashboardLayoutAdmin = () => {
           <Toolbar
             sx={{
               pr: '24px',
-              backgroundColor: '#fff'
+              backgroundColor: '#fff',
             }}
           >
             <IconButton
@@ -143,7 +143,7 @@ const DashboardLayoutAdmin = () => {
                 ...(open && { display: 'none' }),
               }}
             >
-              <MenuIcon sx={{color: '#000'}} />
+              <MenuIcon sx={{ color: '#000' }} />
             </IconButton>
             <Typography
               component="h1"

@@ -1,12 +1,12 @@
 import dotenv from 'dotenv';
 import Users from '../models/Users.mjs';
 import Roles from '../models/Roles.mjs';
-import jwt from 'jsonwebtoken';
+import Employees from '../models/Employees.mjs';
 import bcryptjs from 'bcryptjs';
 
 dotenv.config();
 
-class AuthController {
+class UserController {
   async getAllUser(req, res) {
     try {
       const users = await Users.find({}).select('-password');
@@ -165,7 +165,7 @@ class AuthController {
     }
   }
 
-  async UpdatePassword(req, res) {
+  async updatePassword(req, res) {
     try {
       const { newPassword } = req.body;
 
@@ -198,6 +198,49 @@ class AuthController {
       });
     }
   }
+
+  async updateRole(req, res) {
+    try {
+      const { id, roleId } = req.body;
+      if (!roleId) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'Role not found' });
+      } else {
+        const user = await Users.findById(id);
+        const role = await Roles.findById(roleId);
+        if (!user) {
+          return res
+            .status(400)
+            .json({ success: false, message: 'User not found' });
+        } else {
+          const employee = new Employees({
+            fullName: user.fullName,
+            username: user.username,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            address: user.address,
+            avatar: user.avatar,
+            password: user.password,
+            roles: roleId,
+            position: role.name,
+            salary: 0,
+          });
+          await employee.save();
+          await Users.deleteOne({ _id: id });
+          return res
+            .status(200)
+            .json({ success: true, message: 'Updated role successful' });
+        }
+      }
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'An error occurred while processing the request.',
+        error: error.message,
+      });
+    }
+  }
 }
 
-export default new AuthController();
+export default new UserController();

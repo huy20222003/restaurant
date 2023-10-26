@@ -9,7 +9,7 @@ const Employees = new Schema(
   {
     fullName: {
       type: String,
-      maxLength: 250,
+      maxLength: 200,
       required: true,
     },
     username: {
@@ -20,19 +20,19 @@ const Employees = new Schema(
     },
     email: {
       type: String,
-      default: '',
       required: true,
       trim: true,
       unique: true,
     },
     phoneNumber: {
       type: String,
-      default: '',
       trim: true,
+      unique: true,
     },
     address: {
       type: String,
       default: '',
+      maxLength: 2000,
     },
     position: {
       type: String,
@@ -45,7 +45,7 @@ const Employees = new Schema(
     },
     password: {
       type: String,
-      default: '',
+      default: '$2a$10$ZD/EROx56XOvcutCg9jHxeXrz.iqMstXUCksTyvBb8gfD8SPPm7uW',
       required: true,
       trim: true,
       minLength: 7,
@@ -57,6 +57,7 @@ const Employees = new Schema(
     },
     roles: {
       type: Schema.Types.ObjectId,
+      required: true,
       ref: 'roles',
     },
   },

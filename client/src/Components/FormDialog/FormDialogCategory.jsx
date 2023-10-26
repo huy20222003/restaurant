@@ -13,25 +13,11 @@ import {
 import { useCommon } from '../../hooks/context';
 //---------------------------------------------------------------------
 
-const FormDialogCategory = ({
-  fields,
-  formData,
-  setFormData,
-  handleSave,
-  isEdit,
-}) => {
+const FormDialogCategory = ({ fields, formik, handleSave, isEdit }) => {
   const { openFormDialog, setOpenFormDialog } = useCommon();
 
   const handleClose = () => {
     setOpenFormDialog(false);
-  };
-
-  const handleFieldChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
   };
 
   const handleChangeFile = useCallback(
@@ -40,10 +26,7 @@ const FormDialogCategory = ({
       if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-          setFormData((prevData) => ({
-            ...prevData,
-            imageUrl: reader.result,
-          }));
+          formik.values.imageUrl = reader.result;
         };
         reader.onerror = () => {
           console.error('Error occurred while reading the file.');
@@ -51,7 +34,7 @@ const FormDialogCategory = ({
         reader.readAsDataURL(file);
       }
     },
-    [setFormData]
+    [formik.values]
   );
 
   return (
@@ -65,18 +48,17 @@ const FormDialogCategory = ({
             key={index}
             autoFocus={index === 0}
             margin="dense"
-            id={field.name}
-            name={field.name}
-            label={field.label}
-            type={field.type}
             fullWidth
-            value={formData[field.name] || ''}
-            onChange={handleFieldChange}
+            {...field}
+            value={formik.values[field.name] || ''}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched[field.name] && formik.errors[field.name]}
+            helperText={formik.touched[field.name] && formik.errors[field.name]}
             required
-            multiline
-            rows={field.row}
           />
         ))}
+
         <input
           type="file"
           name="imageUrl"
@@ -110,8 +92,7 @@ FormDialogCategory.propTypes = {
       row: PropTypes.number,
     })
   ).isRequired,
-  formData: PropTypes.object.isRequired,
-  setFormData: PropTypes.func.isRequired,
+  formik: PropTypes.object,
   handleSave: PropTypes.func.isRequired,
   isEdit: PropTypes.bool.isRequired,
 };

@@ -9,11 +9,10 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
-//toast
-import { toast } from 'react-toastify';
+//sweetalert
+import Swal from 'sweetalert2';
 //context
 import { useUser } from '../../../hooks/context';
-
 //------------------------------------------------------
 
 const PreviewAvatar = ({ previewAvatar, open, setOpen, avatarUpdate }) => {
@@ -26,20 +25,20 @@ const PreviewAvatar = ({ previewAvatar, open, setOpen, avatarUpdate }) => {
   const handleUpdate = async () => {
     try {
       if (!avatarUpdate) {
-        toast.error('Please upload an avatar before saving.');
+        Swal.fire('', 'Please upload an avatar before saving.', 'error');
         return;
       } else {
-        const updateData = await handleUpdateAvatar({avatarUpdate});
+        const updateData = await handleUpdateAvatar({ avatarUpdate });
 
         if (!updateData.success) {
-          toast.error('Error updating avatar.');
+          Swal.fire('', 'Error updating avatar.', 'error');
         } else {
-          toast.success('Avatar updated successfully!');
+          Swal.fire('', 'Avatar updated successfully!', 'success');
         }
         handleClose();
       }
     } catch (error) {
-      toast.error('Server Error');
+      Swal.fire('', 'Server Error', 'error');
     }
   };
 

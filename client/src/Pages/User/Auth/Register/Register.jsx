@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -11,7 +12,14 @@ import Iconify from '../../../../Components/User/iconify';
 // sections
 import RegisterForm from '../../../../section/auth/RegisterForm';
 //context
-import { useCommon } from '../../../../hooks/context';
+import { useCommon, useAuth } from '../../../../hooks/context';
+//firebase
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../../../../config/firebase/firebase';
+//sweetalert2
+import Swal from 'sweetalert2';
+//cookie
+import Cookies from 'js-cookie';
 // ----------------------------------------------------------------------
 
 const StyledRoot = styled('div')(({ theme }) => ({
@@ -45,6 +53,42 @@ const StyledContent = styled('div')(({ theme }) => ({
 const Register = () => {
   const mdUp = useResponsive('up', 'md');
   const { handleEvolvingFunctionality } = useCommon();
+  const { registerUser, loadUser } = useAuth();
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState({});
+
+  const signInWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const data = await signInWithPopup(auth, provider);
+      setUser({
+        fullName: data.user.displayName,
+        username: data.user.uid,
+        email: data.user.email,
+        avatar: data.user.photoURL,
+        password: '1234567'
+      });
+      try {
+        const response = await registerUser(user);
+        if(!response.success) {
+          Swal.fire('Failed', 'Login Failed', 'error')
+        } else {
+          const expiration = new Date();
+          expiration.setTime(expiration.getTime() + 15 * 60 * 1000);
+          Cookies.set('user', response.accessToken, { expires: expiration });
+          Cookies.set('refresh', response.refreshToken, { expires: 365 });
+          await loadUser();
+          Swal.fire('Success', 'Login Success', 'success');
+          navigate('/dashboard/app');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'Server Error', 'error');
+      }
+    } catch (error) {
+      Swal.fire('Error', 'Server Error', 'error');
+    }
+  };
 
   return (
     <>
@@ -67,8 +111,8 @@ const Register = () => {
               Hi, Welcome to Restaurant
             </Typography>
             <img
-              src="/assets/illustrations/illustration_login.png"
-              alt="login"
+              src="/assets/illustrations/illustration_register.svg"
+              alt="register"
             />
           </StyledSection>
         )}
@@ -92,7 +136,7 @@ const Register = () => {
                 size="large"
                 color="inherit"
                 variant="outlined"
-                onClick={handleEvolvingFunctionality}
+                onClick={signInWithGoogle}
               >
                 <Iconify
                   icon="eva:google-fill"

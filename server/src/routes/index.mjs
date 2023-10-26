@@ -8,7 +8,7 @@ import adminAuthRouter from './adminAuthRouter.mjs';
 import userRouter from './usersRouter.mjs';
 import ordersRouter from './ordersRouter.mjs';
 import roleRouter from './roleRouter.mjs';
-
+import paymentRouter from './paymentRouter.mjs';
 
 //------------------------------------------------------------
 
@@ -23,6 +23,7 @@ function routes(app) {
   app.use('/api/v1/user', userRouter);
   app.use('/api/v1/order', ordersRouter);
   app.use('/api/v1/role', roleRouter);
+  app.use('/api/v1/payment', paymentRouter);
 }
 
 export default routes;

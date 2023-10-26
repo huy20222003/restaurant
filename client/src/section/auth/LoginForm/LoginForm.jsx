@@ -19,44 +19,48 @@ import Cookies from 'js-cookie';
 // components
 import Iconify from '../../../Components/User/iconify';
 //context
-import {useAuth} from '../../../hooks/context'
+import { useAuth } from '../../../hooks/context';
 //sweetalert
 import Swal from 'sweetalert2';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
   const navigate = useNavigate();
   document.title = 'Login';
   const { loginUser, loadUser } = useAuth();
-  const [loginFormData, setLoginFormData] = useState({
-    username: '',
-    password: '',
+
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    validationSchema: yup.object({
+      username: yup.string().required('Invalid username'),
+      password: yup.string().required('Invalid password'),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const loginData = await loginUser(values);
+        if (!loginData.success) {
+          Swal.fire('Failed', 'Login Failed', 'error');
+        } else {
+          const expiration = new Date();
+          expiration.setTime(expiration.getTime() + 15 * 60 * 1000);
+          Cookies.set('user', loginData.accessToken, { expires: expiration });
+          Cookies.set('refresh', loginData.refreshToken, { expires: 365 });
+          await loadUser();
+          Swal.fire('Success', 'Login Success!', 'success');
+          navigate('/dashboard/app');
+        }
+      } catch (error) {
+        Swal.fire('Error', 'Server Error', 'error');
+      }
+    },
   });
 
-  const handleChangeLoginForm = (e)=> {
-    setLoginFormData({...loginFormData, [e.target.name]: e.target.value});
-  }
-
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleSubmit = async () => {
-    try {
-      const loginData = await loginUser(loginFormData);
-      if (!loginData.success) {
-        Swal.fire('Failed', 'Login Failed', 'error');
-      } else {
-        const expiration = new Date();
-        expiration.setTime(expiration.getTime() + 15 * 60 * 1000);
-        Cookies.set('user', loginData.accessToken, { expires: expiration });
-        Cookies.set('refresh', loginData.refreshToken, { expires: 365 });
-        await loadUser();
-        Swal.fire('Success', 'Login Success!', 'success');
-        navigate('/dashboard/app');
-      }
-    } catch (error) {
-      Swal.fire('Error', 'Server Error', 'error');
-    }
-  };
 
   return (
     <>
@@ -69,9 +73,9 @@ export default function LoginForm() {
           label="Username"
           name="username"
           autoComplete="username"
-          autoFocus
-          value={loginFormData.username}
-          onChange={handleChangeLoginForm}
+          error={!!(formik.touched.username && formik.errors.username)}
+          helperText={formik.touched.username && formik.errors.username}
+          {...formik.getFieldProps('username')}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -84,10 +88,12 @@ export default function LoginForm() {
         <TextField
           name="password"
           label="Password"
+          id="password"
           required
           fullWidth
-          value={loginFormData.password}
-          onChange={handleChangeLoginForm}
+          error={!!(formik.touched.password && formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+          {...formik.getFieldProps('password')}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             startAdornment: (
@@ -117,7 +123,10 @@ export default function LoginForm() {
         justifyContent="space-between"
         sx={{ my: 2 }}
       >
-        <Box><Checkbox name="remember" label="Remember me" />Remember me</Box>
+        <Box>
+          <Checkbox name="remember" label="Remember me" />
+          Remember me
+        </Box>
         <Link variant="subtitle2" underline="hover">
           Forgot password?
         </Link>
@@ -128,7 +137,7 @@ export default function LoginForm() {
         size="large"
         type="submit"
         variant="contained"
-        onClick={handleSubmit}
+        onClick={formik.handleSubmit}
       >
         Login
       </LoadingButton>

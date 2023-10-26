@@ -186,7 +186,7 @@ const Main = () => {
                   >
                     <Box
                       component="img"
-                      src="/assets/images/background/eating_sushi.svg"
+                      src="/assets/illustrations/illustration_home.svg"
                       alt="home_hero"
                       sx={{
                         width: '100%',

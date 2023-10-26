@@ -11,7 +11,8 @@ import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
-
+//context
+import { useAuth } from '../../../hooks/context';
 // ----------------------------------------------------------------------
 
 const NAV_WIDTH = 280;
@@ -43,6 +44,9 @@ Header.propTypes = {
 };
 
 export default function Header({ onOpenNav }) {
+  const {
+    authState: { isAuthenticated },
+  } = useAuth();
   return (
     <StyledRoot>
       <StyledToolbar>
@@ -69,7 +73,7 @@ export default function Header({ onOpenNav }) {
           }}
         >
           <LanguagePopover />
-          <NotificationsPopover />
+          {isAuthenticated ? <NotificationsPopover /> : ''}
           <AccountPopover />
         </Stack>
       </StyledToolbar>

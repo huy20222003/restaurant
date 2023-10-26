@@ -6,14 +6,14 @@ import {
   OverviewLatestOrders,
   OverviewLatestProducts,
   OverviewSales,
-  OverviewTasksProgress,
+  OverviewTotalOrder,
   OverviewTotalCustomers,
   OverviewTotalProfit,
   OverviewTraffic,
   AppWebsiteVisits,
 } from '../../../section/admin/dashboard';
 //context hook
-import { useProduct } from '../../../hooks/context';
+import { useProduct, useOrder } from '../../../hooks/context';
 //------------------------------------------------------------------
 
 const AdminDashboard = () => {
@@ -22,13 +22,20 @@ const AdminDashboard = () => {
     handleGetAllProducts,
   } = useProduct();
 
+  const {ordersState: {orders}, handleGetAllOrders} = useOrder();
+
   useEffect(()=> {
     handleGetAllProducts();
   }, [handleGetAllProducts]);
+
+  useEffect(()=>{
+    handleGetAllOrders();
+  }, [handleGetAllOrders]);
+
   return (
     <>
       <Helmet>
-        <title>Overview | Devias Kit</title>
+        <title>Overview</title>
       </Helmet>
       <Box
         component="main"
@@ -56,7 +63,7 @@ const AdminDashboard = () => {
               />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
-              <OverviewTasksProgress sx={{ height: '100%' }} value={75.5} />
+              <OverviewTotalOrder sx={{ height: '100%' }} />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
               <OverviewTotalProfit sx={{ height: '100%' }} value="$15k" />
@@ -65,11 +72,11 @@ const AdminDashboard = () => {
               <OverviewSales
                 chartSeries={[
                   {
-                    name: 'This year',
+                    name: 'This month',
                     data: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 20],
                   },
                   {
-                    name: 'Last year',
+                    name: 'Last month',
                     data: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13],
                   },
                 ]}
@@ -102,22 +109,22 @@ const AdminDashboard = () => {
                 ]}
                 chartData={[
                   {
-                    name: 'Team A',
+                    name: 'Viet Nam',
                     type: 'column',
                     fill: 'solid',
-                    data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                    data: [2300, 1100, 2200, 2723, 1332, 2245, 3721, 2156, 4467, 2232, 3054],
                   },
                   {
-                    name: 'Team B',
+                    name: 'USA',
                     type: 'area',
                     fill: 'gradient',
-                    data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+                    data: [4443, 5543, 4165, 7667, 2872, 4983, 9821, 4991, 5766, 2877, 4973],
                   },
                   {
-                    name: 'Team C',
+                    name: 'Orther',
                     type: 'line',
                     fill: 'solid',
-                    data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+                    data: [3405, 6525, 3765, 3760, 8459, 3435, 5634, 5532, 2159, 3546, 3649],
                   },
                 ]}
               />
@@ -130,69 +137,8 @@ const AdminDashboard = () => {
             </Grid>
             <Grid xs={12} md={12} lg={12}>
               <OverviewLatestOrders
-                orders={[
-                  {
-                    id: 'f69f88012978187a6c12897f',
-                    ref: 'DEV1049',
-                    amount: 30.5,
-                    customer: {
-                      name: 'Ekaterina Tankova',
-                    },
-                    createdAt: 1555016400000,
-                    status: 'pending',
-                  },
-                  {
-                    id: '9eaa1c7dd4433f413c308ce2',
-                    ref: 'DEV1048',
-                    amount: 25.1,
-                    customer: {
-                      name: 'Cao Yu',
-                    },
-                    createdAt: 1555016400000,
-                    status: 'delivered',
-                  },
-                  {
-                    id: '01a5230c811bd04996ce7c13',
-                    ref: 'DEV1047',
-                    amount: 10.99,
-                    customer: {
-                      name: 'Alexa Richardson',
-                    },
-                    createdAt: 1554930000000,
-                    status: 'refunded',
-                  },
-                  {
-                    id: '1f4e1bd0a87cea23cdb83d18',
-                    ref: 'DEV1046',
-                    amount: 96.43,
-                    customer: {
-                      name: 'Anje Keizer',
-                    },
-                    createdAt: 1554757200000,
-                    status: 'pending',
-                  },
-                  {
-                    id: '9f974f239d29ede969367103',
-                    ref: 'DEV1045',
-                    amount: 32.54,
-                    customer: {
-                      name: 'Clarke Gillebert',
-                    },
-                    createdAt: 1554670800000,
-                    status: 'delivered',
-                  },
-                  {
-                    id: 'ffc83c1560ec2f66a1c05596',
-                    ref: 'DEV1044',
-                    amount: 16.76,
-                    customer: {
-                      name: 'Adam Denisov',
-                    },
-                    createdAt: 1554670800000,
-                    status: 'delivered',
-                  },
-                ]}
-                sx={{ height: '100%' }}
+                orders={orders}
+                sx={{ height: '50%' }}
               />
             </Grid>
           </Grid>

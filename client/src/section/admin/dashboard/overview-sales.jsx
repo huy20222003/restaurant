@@ -124,7 +124,7 @@ const OverviewSales = (props) => {
             Sync
           </Button>
         )}
-        title="Sales"
+        title="Profit"
       />
       <CardContent>
         <Chart
@@ -153,7 +153,7 @@ const OverviewSales = (props) => {
   );
 };
 
-OverviewSales.protoTypes = {
+OverviewSales.propTypes = {
   chartSeries: PropTypes.array.isRequired,
   sx: PropTypes.object
 };

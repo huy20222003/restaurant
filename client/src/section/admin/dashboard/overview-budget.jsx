@@ -77,7 +77,7 @@ const OverviewBudget = (props) => {
   );
 };
 
-OverviewBudget.prototypes = {
+OverviewBudget.propTypes = {
   difference: PropTypes.number,
   positive: PropTypes.bool,
   sx: PropTypes.object,

@@ -38,11 +38,11 @@ const OrderTabPanel = () => {
                 display: 'inline-flex',
                 color: '#fff',
                 backgroundColor:
-                  order?.status[0] === 'Ordered' ? 'success.main' : 'info.main',
+                  order?.status[order?.status.length-1] === 'ordered' ? 'success.main' : 'info.main',
               }}
             >
               <Iconify icon="material-symbols:check" sx={{mr: '0.2rem'}} />
-              <Typography variant='body2'>{order?.status}</Typography>
+              <Typography variant='body2'>{order?.status[order?.status.length-1]}</Typography>
             </Stack>
           )}
           <Divider />

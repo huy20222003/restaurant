@@ -4,15 +4,18 @@ const Carts = new Schema ({
     items: {
         type: Array,
         default: [],
+        required: true,
     },
     totalPrices: {
         type: Number,
-        default: 0
+        default: 0,
+        required: true,
     },
     userCart: {
         type: Schema.Types.ObjectId,
-        ref: 'users'
-    }
+        required: true,
+        ref: 'users',
+    },
 }, {
     timestamps: true
 });

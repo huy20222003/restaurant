@@ -1,6 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-//date format
-import { formatDistanceToNow } from 'date-fns';
 //propType
 import PropTypes from 'prop-types';
 //hero icon
@@ -21,6 +19,8 @@ import {
   ListItemText,
   SvgIcon,
 } from '@mui/material';
+//util
+import { fToNow } from '../../../utils/formatTime';
 //--------------------------------------------------------------------------
 
 const OverviewLatestProducts = (props) => {
@@ -31,15 +31,15 @@ const OverviewLatestProducts = (props) => {
     navigate('product-manage');
   };
 
+  const filterProducts = products.slice(products.length - 10);
+
   return (
     <Card sx={sx}>
       <CardHeader title="Latest Products" />
       <List>
-        {products.map((product, index) => {
+        {filterProducts.map((product, index) => {
           const hasDivider = index < products.length - 1;
-          const updatedAt = new Date(product?.updatedAt);
-          const ago = formatDistanceToNow(updatedAt);
-
+  
           return (
             <ListItem divider={hasDivider} key={product?._id}>
               <ListItemAvatar>
@@ -67,7 +67,7 @@ const OverviewLatestProducts = (props) => {
               <ListItemText
                 primary={product?.name}
                 primaryTypographyProps={{ variant: 'subtitle1' }}
-                secondary={`Updated ${ago} ago`}
+                secondary={`Updated ${fToNow(product?.updatedAt)}`}
                 secondaryTypographyProps={{ variant: 'body2' }}
               />
               <IconButton edge="end">

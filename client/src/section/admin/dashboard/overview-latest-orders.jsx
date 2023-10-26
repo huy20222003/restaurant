@@ -1,5 +1,5 @@
-import { format } from 'date-fns';
 import PropTypes from 'prop-types';
+//@mui
 import ArrowRightIcon from '@heroicons/react/24/solid/ArrowRightIcon';
 import {
   Box,
@@ -15,8 +15,12 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+//component
 import Scrollbar from '../../../Components/User/scrollbar';
 import { SeverityPill } from '../../../Components/Admin/severity-pill/severity-pill';
+//util
+import { fDateTime } from '../../../utils/formatTime';
+//-----------------------------------------------------------------------------------
 
 const statusMap = {
   pending: 'warning',
@@ -27,6 +31,8 @@ const statusMap = {
 const OverviewLatestOrders = (props) => {
   const { orders = [], sx } = props;
 
+  const filterOrders = orders.slice(orders.length - 10);
+
   return (
     <Card sx={sx}>
       <CardHeader title="Latest Orders" />
@@ -35,26 +41,38 @@ const OverviewLatestOrders = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Order</TableCell>
-                <TableCell>Customer</TableCell>
-                <TableCell sortDirection="desc">Date</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>FullName</TableCell>
+                <TableCell>Phone Number</TableCell>
+                <TableCell>Ship Address</TableCell>
+                <TableCell>Total Prices</TableCell>
                 <TableCell>Status</TableCell>
+                <TableCell>Shipping Fee</TableCell>
+                <TableCell>Shipping Unit</TableCell>
+                <TableCell>Payment Method</TableCell>
+                <TableCell sortDirection="desc">Order Date</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((order) => {
-                const createdAt = format(order.createdAt, 'dd/MM/yyyy');
+              {filterOrders.map((order) => {
+                const createdAt = fDateTime(order?.createdAt);
 
                 return (
                   <TableRow hover key={order.id}>
-                    <TableCell>{order.ref}</TableCell>
-                    <TableCell>{order.customer.name}</TableCell>
-                    <TableCell>{createdAt}</TableCell>
+                    <TableCell>{order?._id}</TableCell>
+                    <TableCell>{order?.fullName}</TableCell>
+                    <TableCell>{order?.phoneNumber}</TableCell>
+                    <TableCell>{order?.shipAddress}</TableCell>
+                    <TableCell>{order?.totalPrices}</TableCell>
                     <TableCell>
                       <SeverityPill color={statusMap[order.status]}>
-                        {order.status}
+                        {order.status[order?.status.length - 1]}
                       </SeverityPill>
                     </TableCell>
+                    <TableCell>{order?.shippingFee}</TableCell>
+                    <TableCell>{order?.shippingUnit}</TableCell>
+                    <TableCell>{order?.paymentMethod}</TableCell>
+                    <TableCell>{createdAt}</TableCell>
                   </TableRow>
                 );
               })}
@@ -81,7 +99,7 @@ const OverviewLatestOrders = (props) => {
   );
 };
 
-OverviewLatestOrders.prototype = {
+OverviewLatestOrders.propTypes = {
   orders: PropTypes.array,
   sx: PropTypes.object,
 };

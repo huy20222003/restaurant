@@ -23,7 +23,10 @@ import {
 } from '../../../section/admin/product';
 //sweetalert
 import Swal from 'sweetalert2';
-
+//yup
+import * as yup from 'yup';
+//formik
+import { useFormik } from 'formik';
 //-----------------------------------------
 
 const StyledButtonBaseCreate = styled(ButtonBase)`
@@ -49,24 +52,71 @@ const StyledButtonBaseCreate = styled(ButtonBase)`
 
 const ProductForm = () => {
   const navigate = useNavigate();
-  const [productData, setProductData] = useState({
-    name: '',
-    subDescription: '',
-    description: '',
-    image_url: [],
-    quantity: '',
-    category: '',
-    size: [],
-    color: [],
-    price: '',
-    priceSale: '',
-    status: '',
-  });
 
   const [isEdit, setIsEdit] = useState(false);
   const { _id } = useParams();
   const { handleCreateProduct, handleGetOneProduct, handleUpdateProduct } =
     useProduct();
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      subDescription: '',
+      description: '',
+      image_url: [],
+      quantity: '',
+      category: '',
+      size: [],
+      color: [],
+      price: '',
+      priceSale: '',
+      status: '',
+    },
+    validationSchema: yup.object({
+      name: yup
+        .string()
+        .required('Name is required')
+        .max(200, 'Maximum characters are 200'),
+      subDescription: yup.string().max(1000, 'Maximum characters are 1000'),
+      description: yup
+        .string()
+        .required('Description is required')
+        .max(3000, 'Maximum characters are 3000'),
+      image_url: yup.array().required('Image is required'),
+      quantity: yup.number().required('Quantity is required'),
+      category: yup.string().required('Category is required'),
+      size: yup.string().nullable(),
+      color: yup.string().nullable(),
+      price: yup.number().required('Price is required'),
+      priceSale: yup.number().nullable().when('price', (price, schema) => {
+        return schema.lessThan(price, 'Price Sale must be less than Price');
+      }),
+      status: yup.string().required('Status is required'),
+    }),
+    onSubmit: async (values) => {
+      try {
+        if (isEdit) {
+          const updateData = await handleUpdateProduct(_id, values);
+          if (!updateData.success) {
+            Swal.fire('Failed', 'Update Product Failed', 'error');
+          } else {
+            Swal.fire('Successful', 'Update Product Successful', 'success');
+            navigate('/admin/product-manage');
+          }
+        } else {
+          const createData = await handleCreateProduct(values);
+          if (!createData.success) {
+            Swal.fire('Failed', 'Create Product Failed', 'error');
+          } else {
+            Swal.fire('Successful', 'Create Product Successful', 'success');
+            navigate('/admin/product-manage');
+          }
+        }
+      } catch (error) {
+        Swal.fire('Failed', 'Server Error', 'error');
+      }
+    },
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,7 +124,7 @@ const ProductForm = () => {
         setIsEdit(true);
         try {
           const response = await handleGetOneProduct(_id);
-          setProductData(response.product);
+          formik.setValues(response.product);
         } catch (error) {
           toast.error('Server Error');
         }
@@ -84,34 +134,8 @@ const ProductForm = () => {
     fetchData();
   }, [_id, handleGetOneProduct]);
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-    try {
-      if (isEdit) {
-        const updateData = await handleUpdateProduct(_id ,productData);
-        if (!updateData.success) {
-          Swal.fire('Failed', 'Update Product Failed', 'error');
-        } else {
-          Swal.fire('Successful', 'Update Product Successful', 'success');
-          navigate('/admin/product-manage');
-        }
-      } else {
-        const createData = await handleCreateProduct(productData);
-        if (!createData.success) {
-          Swal.fire('Failed', 'Update Product Failed', 'error');
-        } else {
-          Swal.fire('Successful', 'Create Product Successful', 'success');
-          navigate('/admin/product-manage');
-        }
-      }
-    } catch (error) {
-      Swal.fire('Failed', 'Server Error', 'error');
-    }
-  };
-  
-
   return (
-    <form style={{ marginTop: '2rem' }} onSubmit={handleClick}>
+    <form style={{ marginTop: '2rem' }} onSubmit={formik.handleSubmit}>
       <Grid container spacing={2}>
         <Grid item md={4}>
           <Typography variant="h6">
@@ -123,14 +147,8 @@ const ProductForm = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Paper elevation={0} component={Card}>
-            <ProductFormDetail
-              productData={productData}
-              setProductData={setProductData}
-            />
-            <ProductFormImage
-              productData={productData}
-              setProductData={setProductData}
-            />
+            <ProductFormDetail formik={formik} />
+            <ProductFormImage formik={formik} />
           </Paper>
         </Grid>
         <Grid item md={4}>
@@ -140,20 +158,14 @@ const ProductForm = () => {
           </Typography>
         </Grid>
         <Grid item xs={12} md={8}>
-          <ProductFormProperty
-            productData={productData}
-            setProductData={setProductData}
-          />
+          <ProductFormProperty formik={formik} />
         </Grid>
         <Grid item md={4}>
           <Typography variant="h6">Price</Typography>
           <Typography variant="body2">Price related inputs</Typography>
         </Grid>
         <Grid item xs={12} md={8}>
-          <ProductFormPrice
-            productData={productData}
-            setProductData={setProductData}
-          />
+          <ProductFormPrice formik={formik} />
         </Grid>
         <Grid item md={4}></Grid>
         <Grid item xs={12} md={8}>

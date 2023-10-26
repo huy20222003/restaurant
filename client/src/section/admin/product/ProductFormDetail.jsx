@@ -1,14 +1,11 @@
 import PropTypes from 'prop-types';
-//@mui
 import { Box, Stack, TextField, Typography } from '@mui/material';
-//Ckeditor
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import editorConfig from '../../../config/editorConfig';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'; // Import ClassicEditor from the CKEditor build
 
-//-----------------------------------------------------------
+const ProductFormDetail = ({ formik }) => {
+  const { values, setFieldValue, errors, touched } = formik;
 
-const ProductFormDetail = ({ productData, setProductData }) => {
   return (
     <>
       <Stack sx={{ gap: '24px', padding: '24px' }}>
@@ -17,10 +14,11 @@ const ProductFormDetail = ({ productData, setProductData }) => {
           name="name"
           label="Product Name"
           fullWidth
-          value={productData?.name || ''}
-          onChange={(e) => {
-            setProductData({ ...productData, name: e.target.value });
-          }}
+          value={values.name}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={!!(formik.touched.name && formik.errors.name)}
+          helperText={formik.touched.name && formik.errors.name}
         />
         <TextField
           required
@@ -29,10 +27,11 @@ const ProductFormDetail = ({ productData, setProductData }) => {
           fullWidth
           multiline
           rows={4}
-          value={productData?.subDescription || ''}
-          onChange={(e) => {
-            setProductData({ ...productData, subDescription: e.target.value });
-          }}
+          value={values.subDescription}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={!!(formik.touched.subDescription && formik.errors.subDescription)}
+          helperText={formik.touched.subDescription && formik.errors.subDescription}
         />
       </Stack>
       <Stack sx={{ gap: '12px', p: '1rem' }}>
@@ -47,15 +46,18 @@ const ProductFormDetail = ({ productData, setProductData }) => {
         >
           <CKEditor
             editor={ClassicEditor}
-            config={editorConfig}
+            data={values.description} 
             onReady={(editor) => {
               console.log('Editor is ready to use!', editor);
             }}
             onChange={(event, editor) => {
               const data = editor.getData();
-              setProductData({ ...productData, description: data });
+              setFieldValue('description', data); 
             }}
           />
+          {touched.description && errors.description && (
+            <span style={{ color: 'red' }}>{errors.description}</span>
+          )}
         </Box>
       </Stack>
     </>
@@ -63,8 +65,7 @@ const ProductFormDetail = ({ productData, setProductData }) => {
 };
 
 ProductFormDetail.propTypes = {
-  productData: PropTypes.object.isRequired,
-  setProductData: PropTypes.func.isRequired,
+  formik: PropTypes.object.isRequired,
 };
 
 export default ProductFormDetail;

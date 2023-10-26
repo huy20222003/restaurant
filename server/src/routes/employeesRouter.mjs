@@ -4,16 +4,17 @@ const router = Router();
 import authVerify from '../middleware/auth.mjs';
 import cashbinMiddleware from '../middleware/cashbinMiddleware.mjs';
 //controller
-import Employees from '../app/controllers/EmployeesController.mjs';
+import EmployeesController from '../app/controllers/EmployeesController.mjs';
 //-------------------------------------------------------------
 
-router.get('/', authVerify, cashbinMiddleware, Employees.getAllEmployees);
-router.get('/:_id', authVerify, cashbinMiddleware, Employees.getSingleEmployee);
-router.post('/create-emloyee', authVerify, cashbinMiddleware, Employees.addEmployee);
-router.put('/update-employee/:_id', authVerify, cashbinMiddleware, Employees.updateEmployee);
-router.delete('/delete-employee/:_id', authVerify, cashbinMiddleware, Employees.deleteEmployee);
-router.patch('/update-employee/password', authVerify, cashbinMiddleware, Employees.updatePassword);
-router.patch('/update-employee/avatar', authVerify, cashbinMiddleware, Employees.updateAvatar);
-
+router.patch('/update-employee/password', authVerify, cashbinMiddleware, EmployeesController.updatePassword);
+router.patch('/update-employee/avatar', authVerify, cashbinMiddleware, EmployeesController.updateAvatar);
+router.put('/update-employee/detail', authVerify, cashbinMiddleware, EmployeesController.updateInfo);
+router.get('/', authVerify, cashbinMiddleware, EmployeesController.getAllEmployees);
+router.get('/:_id', authVerify, cashbinMiddleware, EmployeesController.getSingleEmployee);
+router.post('/create-emloyee', authVerify, cashbinMiddleware, EmployeesController.addEmployee);
+router.put('/update-employee/:_id', authVerify, cashbinMiddleware, EmployeesController.updateEmployee);
+router.delete('/delete-employee/:_id', authVerify, cashbinMiddleware, EmployeesController.deleteEmployee);
+router.patch('/update-employee/role', authVerify, cashbinMiddleware, EmployeesController.updateRole);
 
 export default router;
