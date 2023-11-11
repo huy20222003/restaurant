@@ -1,4 +1,4 @@
-export {default as OverviewBudget} from './overview-budget';
+export {default as OverviewTotalQuantity} from './overview-total-quantity';
 export {default as OverviewLatestOrders} from './overview-latest-orders';
 export {default as OverviewLatestProducts} from './overview-latest-products';
 export {default as OverviewSales} from './overview-sales';

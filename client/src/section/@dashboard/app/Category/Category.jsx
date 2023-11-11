@@ -54,7 +54,8 @@ const Category = () => {
               >
                 {chunk.map((category) => (
                   <CategoryItem
-                    key={category.id}
+                    key={category._id}
+                    id={category._id}
                     name={category.name}
                     image={category.imageUrl}
                   />

@@ -4,7 +4,7 @@ import ArrowUpIcon from '@heroicons/react/24/solid/ArrowUpIcon';
 import CurrencyDollarIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
 import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/material';
 
-const OverviewBudget = (props) => {
+const OverviewTotalQuantity = (props) => {
   const { difference, positive = false, sx, value } = props;
 
   return (
@@ -21,9 +21,9 @@ const OverviewBudget = (props) => {
               color="text.secondary"
               variant="overline"
             >
-              Budget
+              Total quantity sold
             </Typography>
-            <Typography variant="h4">
+            <Typography variant="h5">
               {value}
             </Typography>
           </Stack>
@@ -77,11 +77,11 @@ const OverviewBudget = (props) => {
   );
 };
 
-OverviewBudget.propTypes = {
+OverviewTotalQuantity.propTypes = {
   difference: PropTypes.number,
   positive: PropTypes.bool,
   sx: PropTypes.object,
   value: PropTypes.string.isRequired
 };
 
-export default OverviewBudget;
+export default OverviewTotalQuantity;

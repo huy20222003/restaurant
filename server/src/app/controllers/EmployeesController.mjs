@@ -40,9 +40,9 @@ class EmployeeController {
 
   async addEmployee(req, res) {
     try {
-      const { fullName, username, email, position, salary, password } =
+      const { fullName, username, email, position, salary, password, phoneNumber } =
         req.body;
-      if (!fullName || !username || !email || !position || !salary) {
+      if (!fullName || !username || !email || !position || !salary || !phoneNumber) {
         return res
           .status(400)
           .json({ success: false, message: 'Required fields missing' });
@@ -63,6 +63,7 @@ class EmployeeController {
         position,
         salary,
         password,
+        phoneNumber,
         roles: roles._id,
       });
 
@@ -100,7 +101,8 @@ class EmployeeController {
         !updatedEmployee.email ||
         !updatedEmployee.position ||
         !updatedEmployee.salary ||
-        !updatedEmployee.password
+        !updatedEmployee.password ||
+        !updatedEmployee.phoneNumber
       ) {
         return res
           .status(400)

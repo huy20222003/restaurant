@@ -19,6 +19,9 @@ import { CartProvider } from './Contexts/CartContext';
 import { OrdersProvider } from './Contexts/OrderContext';
 import { RoleProvider } from './Contexts/RoleContext';
 import { PaymentsProvider } from './Contexts/PaymentContext';
+import { ReservationProvider } from './Contexts/ReservationContext';
+import { TableProvider } from './Contexts/TableContext';
+import { ReviewProvider } from './Contexts/ReviewContext';
 
 // ----------------------------------------------------------------------
 
@@ -39,7 +42,13 @@ export default function App() {
                         <OrdersProvider>
                           <RoleProvider>
                             <PaymentsProvider>
-                              <Router />
+                              <ReservationProvider>
+                                <TableProvider>
+                                  <ReviewProvider>
+                                    <Router />
+                                  </ReviewProvider>
+                                </TableProvider>
+                              </ReservationProvider>
                             </PaymentsProvider>
                           </RoleProvider>
                         </OrdersProvider>

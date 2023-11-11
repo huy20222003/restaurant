@@ -38,11 +38,11 @@ const OrderTabPanel = () => {
                 display: 'inline-flex',
                 color: '#fff',
                 backgroundColor:
-                  order?.status[order?.status.length-1] === 'ordered' ? 'success.main' : 'info.main',
+                  order?.status === 'ordered' ? 'success.main' : 'info.main',
               }}
             >
               <Iconify icon="material-symbols:check" sx={{mr: '0.2rem'}} />
-              <Typography variant='body2'>{order?.status[order?.status.length-1]}</Typography>
+              <Typography variant='body2'>{order?.status}</Typography>
             </Stack>
           )}
           <Divider />
@@ -86,7 +86,7 @@ const OrderTabPanel = () => {
                       borderTopLeftRadius: '10px',
                     }}
                   >
-                    x{order.items[0]?.quantity}
+                    x{order.items?.quantity}
                   </Typography>
                 </Box>
                 <Stack sx={{ mx: '12px' }}>
@@ -112,8 +112,8 @@ const OrderTabPanel = () => {
               <Box>
                 <Typography variant="body2">
                   {order.items[0]?.product?.priceSale
-                    ? order.items[0]?.product?.priceSale
-                    : order.items[0]?.product?.price}
+                    ? order.items?.product?.priceSale
+                    : order.items?.product?.price}
                 </Typography>
               </Box>
             </Stack>

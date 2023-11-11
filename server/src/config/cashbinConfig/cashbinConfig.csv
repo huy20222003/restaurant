@@ -38,11 +38,13 @@ p, admin, /api/v1/employee/update-employee/:_id, PUT
 p, admin, /api/v1/employee/delete-employee/:_id, DELETE
 p, admin, /api/v1/employee/update-employee/password, PATCH
 p, admin, /api/v1/employee/update-employee/avatar, PATCH
+p, admin, /api/v1/employee/update-employee/detail, PUT
 
-p, employee, /api/employee, GET
-p, employee, /api/employee/:_id, GET
-p, employee, /api/employee/update-employee/password, PATCH
-p, employee, /api/employee/update-employee/avatar, PATCH
+p, employee, /api/v1/employee, GET
+p, employee, /api/v1/employee/:_id, GET
+p, employee, /api/v1/employee/update-employee/password, PATCH
+p, employee, /api/v1/employee/update-employee/avatar, PATCH
+p, employee, /api/v1/employee/update-employee/detail, PUT
 
 #order router
 p, admin, /api/v1/order, GET
@@ -57,6 +59,7 @@ p, user, /api/v1/order/getAllById, GET
 p, user, /api/v1/order/:_id, GET
 p, user, /api/v1/order/create-order, POST
 p, user, /api/v1/order/update-order/:_id PATCH
+p, user, /api/v1/order/update-cart, PUT
 
 #user router
 p, admin, /api/v1/user, GET
@@ -70,11 +73,54 @@ p, employee, /api/v1/user/:_id, GET
 p, employee, /api/v1/user/create-user, POST
 p, employee, /api/v1/user/delete-user/:_id, DELETE
 
+p, user, /api/v1/user/:_id, GET
 p, user, /api/v1/user/update-user/avatar, PATCH
 p, user, /api/v1/user/update-user/detail, PUT
 p, user, /api/v1/user/update-user/password, PATCH
 
+#payment router
+p, admin, /api/v1/payment, GET
+p, admin, /api/v1/payment/:_id, GET
+p, admin, /api/v1/payment/update-payment/:_id, PUT
+
+p, employee, /api/v1/payment, GET
+p, employee, /api/v1/payment/:_id, GET
+p, employee, /api/v1/payment/update-payment/:_id, PUT
+
+p, user, /api/v1/payment/create-payment, POST
+p, user, /api/v1/payment/create-payment-vnpay, POST
+p, user, /api/v1/payment/:_id, GET
+p, user, /api/v1/payment/update-payment/:_id, PUT
+
 #role router
 p, admin, /api/v1/role, GET
+p, admin, /api/v1/role/:_id, GET
 
 p, employee, /api/v1/role, GET
+p, employee, /api/v1/role/:_id, GET
+
+#reservation router
+p, admin, /api/v1/reservation, GET
+
+p, employee, /api/v1/reservation, GET
+
+p, user, /api/v1/reservation/create-reservation, POST
+p, user, /api/v1/reservation, GET
+p, user, /api/v1/reservation/filter-reservation, POST
+p, user, /api/v1/reservation/get-by-id, GET
+
+#table router
+
+p, admin, /api/v1/table/create-table, POST
+p, admin, /api/v1/table/update-table/:_id, PUT
+p, admin, /api/v1/table/delete-table/:_id, DELETE
+
+p, employee, /api/v1/table/create-table, POST
+p, employee, /api/v1/table/update-table/:_id, PUT
+p, employee, /api/v1/table/delete-table/:_id, DELETE
+
+
+#review router
+
+p, user, /api/v1/review/create-review, POST
+p, user, /api/v1/review/update-order, PUT

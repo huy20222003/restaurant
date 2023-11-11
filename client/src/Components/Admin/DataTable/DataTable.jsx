@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
 //@mui
 import { DataGrid } from '@mui/x-data-grid';
+import React from 'react';
 //------------------------------------------------------------
 
-const DataTable = ({ columns, rows }) => {
-
+const DataTable = React.forwardRef(function DataTable( props, ref ) {
+  const {columns, rows} = props;
   return (
     <DataGrid
+      ref={ref}
       rows={rows.map((row) => ({ ...row, id: row.id }))}
       columns={columns}
       initialState={{
@@ -16,10 +18,10 @@ const DataTable = ({ columns, rows }) => {
       }}
       pageSizeOptions={[10, 20, 30]}
       checkboxSelection
-      density='comfortable'
+      density="comfortable"
     />
   );
-};
+});
 
 DataTable.propTypes = {
   columns: PropTypes.arrayOf(
@@ -33,6 +35,7 @@ DataTable.propTypes = {
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     })
   ).isRequired,
+  ref: PropTypes.object,
 };
 
 export default DataTable;

@@ -125,7 +125,7 @@ const CartTableItem = ({
     });
   };
 
-  const itemId = item ? item._id : null;
+  const itemId = item ? item._id : Math.random();
 
   return (
     <TableRow key={itemId}>

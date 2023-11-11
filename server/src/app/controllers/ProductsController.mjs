@@ -69,7 +69,7 @@ class ProductsController {
         !price ||
         !description ||
         !status ||
-        !quantity||
+        !quantity ||
         !image_url ||
         image_url.length === 0
       ) {
@@ -82,12 +82,10 @@ class ProductsController {
         for (const imageUrl of image_url) {
           const uploadResult = await Products.uploadFileToCloudinary(imageUrl);
           if (!uploadResult.status) {
-            return res
-              .status(500)
-              .json({
-                success: false,
-                message: 'Error uploading one or more images',
-              });
+            return res.status(500).json({
+              success: false,
+              message: 'Error uploading one or more images',
+            });
           }
           uploadedImageUrls.push(uploadResult.imageUrl);
         }
@@ -186,7 +184,6 @@ class ProductsController {
 
   async searchProduct(req, res) {
     const q = req.query.q;
-    console.log('q', q);
 
     try {
       const products = await Products.find({
@@ -196,6 +193,22 @@ class ProductsController {
       return res
         .status(200)
         .json({ success: true, message: 'Products found.', products });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'An error occurred while processing the request.',
+        error: error.message,
+      });
+    }
+  }
+
+  async filterProductsByCategory(req, res) {
+    try {
+      const { q } = req.query;
+      const products = await Products.find({ category: q });
+      return res
+        .status(200)
+        .json({ success: true, message: 'Retrieve data successful', products });
     } catch (error) {
       return res.status(500).json({
         success: false,

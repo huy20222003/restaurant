@@ -37,12 +37,15 @@ const StyledButtonBaseConfirm = styled(ButtonBase)`
 const CartConfirm = ({ orderData }) => {
   const navigate = useNavigate();
   const { setActiveStep } = useCommon();
-  const { handleCreateOrder } = useOrder();
+  const { handleCreateOrder, handleUpdateCartAfterOrder } = useOrder();
   const { handleCreatePayment, handlePaymentWithVnPay } = usePayment();
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
+  orderData.items.forEach((item) => (item.isReview = false));
+  console.log(orderData);
 
   const handleCreate = async () => {
     switch (orderData.paymentMethod) {
@@ -54,16 +57,26 @@ const CartConfirm = ({ orderData }) => {
           } else {
             const paymentData = await handleCreatePayment({
               sender: orderData.fullName,
-              description: `Payment for orderId #${createData.order._id}`,
+              description: `Payment for orderId ${createData.order._id}`,
               amount: orderData.totalPrices,
               paymentMethod: orderData.paymentMethod,
+              status: 'pending',
             });
             if (!paymentData.success) {
               Swal.fire('Faield', 'Order failed!', 'error');
             } else {
               Swal.fire('Success', 'Order Success!', 'success');
-              navigate('/dashboard/cart');
-              setActiveStep(0);
+              const cartData = await handleUpdateCartAfterOrder({
+                orderItems: createData.order.items,
+              });
+              if (!cartData.success) {
+                Swal.fire('', 'Order failed', 'error');
+              } else {
+                navigate(
+                  `/dashboard/order/payment-status/${paymentData.payment._id}`
+                );
+                setActiveStep(0);
+              }
             }
           }
         } catch (error) {
@@ -72,14 +85,27 @@ const CartConfirm = ({ orderData }) => {
         break;
       case 'VNPay':
         try {
-          const response = await handlePaymentWithVnPay({
-            amount: orderData.totalPrices,
-            orderInfo: orderData,
-          });
-          const newLink = document.createElement('a');
-          newLink.href = response.url;
-          newLink.target = '_blank';
-          newLink.click();
+          const createData = await handleCreateOrder(orderData);
+          if (!createData.success) {
+            Swal.fire('Faield', 'Order failed!', 'error');
+          } else {
+            const paymentData = await handleCreatePayment({
+              sender: orderData.fullName,
+              description: `Payment for order ${createData.order._id}`,
+              amount: orderData.totalPrices,
+              status: 'pending',
+              paymentMethod: 'VNPay',
+              userPayment: createData.order.userOrder,
+            });
+            const response = await handlePaymentWithVnPay({
+              amount: orderData.totalPrices,
+              orderInfo: `Payment for orderId ${createData.order._id} and payment ${paymentData.payment._id}`,
+            });
+            const newLink = document.createElement('a');
+            newLink.href = response.url;
+            newLink.target = '_blank';
+            newLink.click();
+          }
         } catch (error) {
           Swal.fire('Error', 'Server Error', 'error');
         }

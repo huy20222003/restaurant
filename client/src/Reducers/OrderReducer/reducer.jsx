@@ -33,7 +33,7 @@ export const reducer = (state, action) => {
     case CREATE_ORDER:
       return {
         ...state,
-        orders: [...state.orders, payload],
+        orders: [...state.orders].concat(payload),
       };
     case FILTER_ORDER_BY_STATUS:
       return {

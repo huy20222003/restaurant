@@ -71,18 +71,18 @@ const OrderPageDetail = () => {
                     textTransform: 'capitalize',
                     padding: '0px 6px',
                     color:
-                      orderInfo.status[orderInfo.status.length - 1] ===
+                      orderInfo.status ===
                       'cancelled'
                         ? 'error.main'
                         : 'primary.main',
                     backgroundColor:
-                      orderInfo.status[orderInfo.status.length - 1] ===
+                      orderInfo.status ===
                       'cancelled'
                         ? 'error.lighter'
                         : 'primary.lighter',
                   }}
                 >
-                  {orderInfo.status[orderInfo.status.length - 1]}
+                  {orderInfo.status}
                 </Typography>
               </Stack>
             </Stack>

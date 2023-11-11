@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 //@mui
 import {
@@ -32,6 +32,9 @@ import Swal from 'sweetalert2';
 import HTMLReactParser from 'html-react-parser';
 //util
 import { fDateTime } from '../../../utils/formatTime';
+//pdf
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 //---------------------------------------------------------
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -56,6 +59,22 @@ const ProductManage = () => {
   useEffect(() => {
     handleGetAllProducts();
   }, [handleGetAllProducts]);
+
+  const componentRef = useRef(null);
+
+  const handleExportPDF = () => {
+    const pdf = new jsPDF('l', 'pt', 'letter');
+    const table = componentRef.current; 
+  
+    html2canvas(table).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pageWidth = 612;
+      const pageHeight = (canvas.height * pageWidth) / canvas.width;
+  
+      pdf.addImage(imgData, 'JPEG', 10, 10, pageWidth - 20, pageHeight - 20);
+      pdf.save('datatable.pdf');
+    });
+  };
 
   const columns = [
     { field: 'id', headerName: 'ID', type: 'String', width: 90 },
@@ -261,7 +280,7 @@ const ProductManage = () => {
                         />
                         Upload
                       </ButtonBase>
-                      <ButtonBase sx={{ p: '0.2rem' }}>
+                      <ButtonBase sx={{ p: '0.2rem' }} onClick={handleExportPDF}>
                         <Iconify icon="uil:import" sx={{ mr: '0.3rem' }} />
                         Export
                       </ButtonBase>
@@ -278,7 +297,7 @@ const ProductManage = () => {
                     </Button>
                   </Stack>
                 </Stack>
-                <DataTable columns={columns} rows={rows} />
+                <DataTable ref={componentRef} columns={columns} rows={rows} />
               </Stack>
             </Container>
           </Box>

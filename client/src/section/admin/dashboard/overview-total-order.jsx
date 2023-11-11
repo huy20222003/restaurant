@@ -11,7 +11,7 @@ import {
 //--------------------------------------------------------
 
 const OverviewTotalOrder = (props) => {
-  const { sx } = props;
+  const { sx, value } = props;
 
   return (
     <Card sx={sx}>
@@ -30,8 +30,8 @@ const OverviewTotalOrder = (props) => {
             >
               Total order
             </Typography>
-            <Typography variant="h4">
-              24.6k
+            <Typography variant="h5">
+              {value}
             </Typography>
           </Stack>
           <Avatar
@@ -52,7 +52,8 @@ const OverviewTotalOrder = (props) => {
 };
 
 OverviewTotalOrder.propTypes = {
-  sx: PropTypes.object
+  sx: PropTypes.object,
+  value:PropTypes.number,
 };
 
 export default OverviewTotalOrder;

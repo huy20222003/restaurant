@@ -160,7 +160,7 @@ const CartStepper = () => {
     shipAddress: '',
     items: [],
     totalPrices: 0,
-    status: ['Ordered'],
+    status: 'ordered',
     shippingFee: 0,
     shippingUnit: '',
     paymentMethod: '',

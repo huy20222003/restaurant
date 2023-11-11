@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
 import {
-  OverviewBudget,
+  OverviewTotalQuantity,
   OverviewLatestOrders,
   OverviewLatestProducts,
   OverviewSales,
@@ -13,7 +13,16 @@ import {
   AppWebsiteVisits,
 } from '../../../section/admin/dashboard';
 //context hook
-import { useProduct, useOrder } from '../../../hooks/context';
+import {
+  useProduct,
+  useOrder,
+  usePayment,
+  useUser,
+} from '../../../hooks/context';
+//utils
+import { fCurrency } from '../../../utils/formatNumber';
+//moment
+import { parse } from 'date-fns';
 //------------------------------------------------------------------
 
 const AdminDashboard = () => {
@@ -22,15 +31,79 @@ const AdminDashboard = () => {
     handleGetAllProducts,
   } = useProduct();
 
-  const {ordersState: {orders}, handleGetAllOrders} = useOrder();
+  const {
+    ordersState: { orders },
+    handleGetAllOrders,
+  } = useOrder();
+  const {
+    paymentState: { payments },
+    handleGetAllPayments,
+  } = usePayment();
+  const {
+    usersState: { users },
+    handleGetAllUser,
+  } = useUser();
 
-  useEffect(()=> {
+  useEffect(() => {
+    handleGetAllPayments();
+  }, [handleGetAllPayments]);
+
+  useEffect(() => {
     handleGetAllProducts();
   }, [handleGetAllProducts]);
 
-  useEffect(()=>{
+  useEffect(() => {
     handleGetAllOrders();
   }, [handleGetAllOrders]);
+
+  useEffect(() => {
+    handleGetAllUser();
+  }, [handleGetAllUser]);
+
+  const profitArr = payments.filter((payment) => payment.status == 'success');
+
+  const profit = profitArr.reduce((total, curr) => {
+    return total + curr.amount;
+  }, 0);
+
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const lastMonth = currentDate.getMonth();
+
+  const usersInCurrentMonth = users.filter((user) => {
+    const createdAtDate = parse(
+      user.createdAt,
+      "EEE MMM dd yyyy HH:mm:ss 'GMT'xxxx",
+      new Date()
+    );
+    const createdAtMonth = createdAtDate.getMonth() + 1;
+    return createdAtMonth === currentMonth;
+  });
+
+  const usersInLastMonth = users.filter((user) => {
+    const createdAtDate = parse(
+      user.createdAt,
+      "EEE MMM dd yyyy HH:mm:ss 'GMT'xxxx",
+      new Date()
+    );
+    const createdLastMonth = createdAtDate.getMonth();
+    return createdLastMonth === lastMonth;
+  });
+
+  const difference = isNaN(
+    (usersInCurrentMonth.length / usersInLastMonth.length) * 100
+  )
+    ? (usersInCurrentMonth.length / usersInLastMonth.length) * 100
+    : '0';
+
+  const ordersArr = orders.filter((order)=>order.status !== 'cancelled');
+
+  const totalQuantity = ordersArr.reduce((total, curr)=> {
+    const items = curr.items.reduce((total, curr)=> {
+      return total + curr.quantity
+    }, 0);
+    return total + items;
+  }, 0);
 
   return (
     <>
@@ -47,26 +120,32 @@ const AdminDashboard = () => {
         <Container maxWidth="xl">
           <Grid container spacing={3}>
             <Grid xs={12} sm={6} lg={3}>
-              <OverviewBudget
+              <OverviewTotalQuantity
                 difference={12}
                 positive
                 sx={{ height: '100%' }}
-                value="$24k"
+                value={totalQuantity}
               />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
               <OverviewTotalCustomers
-                difference={16}
-                positive={false}
+                difference={difference}
+                positive={usersInCurrentMonth > usersInLastMonth ? true : false}
                 sx={{ height: '100%' }}
-                value="1.6k"
+                value={users.length}
               />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
-              <OverviewTotalOrder sx={{ height: '100%' }} />
+              <OverviewTotalOrder
+                sx={{ height: '100%' }}
+                value={orders.length}
+              />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
-              <OverviewTotalProfit sx={{ height: '100%' }} value="$15k" />
+              <OverviewTotalProfit
+                sx={{ height: '100%' }}
+                value={fCurrency(profit) + 'đ'}
+              />
             </Grid>
             <Grid xs={12} lg={12}>
               <OverviewSales
@@ -112,19 +191,28 @@ const AdminDashboard = () => {
                     name: 'Viet Nam',
                     type: 'column',
                     fill: 'solid',
-                    data: [2300, 1100, 2200, 2723, 1332, 2245, 3721, 2156, 4467, 2232, 3054],
+                    data: [
+                      2300, 1100, 2200, 2723, 1332, 2245, 3721, 2156, 4467,
+                      2232, 3054,
+                    ],
                   },
                   {
                     name: 'USA',
                     type: 'area',
                     fill: 'gradient',
-                    data: [4443, 5543, 4165, 7667, 2872, 4983, 9821, 4991, 5766, 2877, 4973],
+                    data: [
+                      4443, 5543, 4165, 7667, 2872, 4983, 9821, 4991, 5766,
+                      2877, 4973,
+                    ],
                   },
                   {
                     name: 'Orther',
                     type: 'line',
                     fill: 'solid',
-                    data: [3405, 6525, 3765, 3760, 8459, 3435, 5634, 5532, 2159, 3546, 3649],
+                    data: [
+                      3405, 6525, 3765, 3760, 8459, 3435, 5634, 5532, 2159,
+                      3546, 3649,
+                    ],
                   },
                 ]}
               />
@@ -136,10 +224,7 @@ const AdminDashboard = () => {
               />
             </Grid>
             <Grid xs={12} md={12} lg={12}>
-              <OverviewLatestOrders
-                orders={orders}
-                sx={{ height: '50%' }}
-              />
+              <OverviewLatestOrders orders={orders} sx={{ height: '50%' }} />
             </Grid>
           </Grid>
         </Container>

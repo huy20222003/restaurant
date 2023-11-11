@@ -1,7 +1,26 @@
+import { useNavigate } from 'react-router-dom';
+//@mui
 import { Box, Stack, Typography } from '@mui/material';
-import PropTypes from 'prop-types'; // Import PropType
+//proptype
+import PropTypes from 'prop-types';
+//context
+import {useProduct} from '../../../../hooks/context';
+//--------------------------------------------------
 
-const CategoryItem = ({ name, image }) => {
+const CategoryItem = ({ id, name, image }) => {
+  const navigate = useNavigate();
+  const {handleFilterProductsByCategory} = useProduct();
+
+  const fetchProducts = async () => {
+    try {
+      await handleFilterProductsByCategory(id);
+      navigate('/dashboard/products');
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      // Xử lý lỗi theo cách bạn muốn
+    }
+  };
+
   return (
     <Box sx={{ cursor: 'pointer' }}>
       <Stack sx={{ alignItems: 'center', gap: '0.75rem' }}>
@@ -18,6 +37,7 @@ const CategoryItem = ({ name, image }) => {
 };
 
 CategoryItem.propTypes = {
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
 };

@@ -132,7 +132,7 @@ const OrderManage = () => {
       phoneNumber: order?.phoneNumber,
       shipAddress: order?.shipAddress,
       totalPrices: order?.totalPrices,
-      status: order?.status[order?.status.length - 1],
+      status: order?.status,
       shippingFee: order?.shippingFee,
       shippingUnit: order?.shippingUnit,
       paymentMethod: order?.paymentMethod,

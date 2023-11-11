@@ -96,7 +96,7 @@ FormDialogEmployee.propTypes = {
   ).isRequired,
   formik: PropTypes.object,
   handleSave: PropTypes.func.isRequired,
-  isEdit: PropTypes.bool.isRequired,
+  isEdit: PropTypes.string.isRequired,
 };
 
 export default FormDialogEmployee;

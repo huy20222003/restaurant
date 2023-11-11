@@ -13,8 +13,8 @@ const ProductPagination = () => {
   return (
     <Stack spacing={2}>
       <Pagination
-        count={totalPages && totalPages}
-        page={currentPage && currentPage}
+        count={totalPages || 1}
+        page={currentPage || 1}
         onChange={handlePageChange}
         variant="outlined"
         shape="rounded"

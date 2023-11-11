@@ -45,11 +45,7 @@ const Employees = new Schema(
     },
     password: {
       type: String,
-<<<<<<< HEAD
       default: '$2a$10$ZD/EROx56XOvcutCg9jHxeXrz.iqMstXUCksTyvBb8gfD8SPPm7uW',
-=======
-      default: '1234567',
->>>>>>> 0f17552f1d934bed96304db852a63f08346ba76d
       required: true,
       trim: true,
       minLength: 7,

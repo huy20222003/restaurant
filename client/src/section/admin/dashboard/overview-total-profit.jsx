@@ -21,7 +21,7 @@ const OverviewTotalProfit = (props) => {
             >
               Total Profit
             </Typography>
-            <Typography variant="h4">
+            <Typography variant="h5">
               {value}
             </Typography>
           </Stack>

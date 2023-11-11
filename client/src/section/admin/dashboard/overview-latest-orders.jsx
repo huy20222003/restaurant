@@ -59,14 +59,14 @@ const OverviewLatestOrders = (props) => {
 
                 return (
                   <TableRow hover key={order.id}>
-                    <TableCell>{order?._id}</TableCell>
+                    <TableCell>{order?.id}</TableCell>
                     <TableCell>{order?.fullName}</TableCell>
                     <TableCell>{order?.phoneNumber}</TableCell>
                     <TableCell>{order?.shipAddress}</TableCell>
                     <TableCell>{order?.totalPrices}</TableCell>
                     <TableCell>
                       <SeverityPill color={statusMap[order.status]}>
-                        {order.status[order?.status.length - 1]}
+                        {order.status}
                       </SeverityPill>
                     </TableCell>
                     <TableCell>{order?.shippingFee}</TableCell>

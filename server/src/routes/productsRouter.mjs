@@ -12,6 +12,7 @@ router.put('/update-product/:_id', authVerify, cashbinMiddleware, ProductsContro
 router.delete('/delete-product/:_id', authVerify, cashbinMiddleware, ProductsController.deleteProduct);
 
 router.get('/search-product', ProductsController.searchProduct);
+router.get('/filter-product', ProductsController.filterProductsByCategory);
 router.get('/', ProductsController.getAllProducts);
 router.get('/:_id', ProductsController.getSingleProduct);
 

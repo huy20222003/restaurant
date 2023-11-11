@@ -6,7 +6,7 @@ import Carts from '../models/Carts.mjs';
 class OrdersController {
   async getAllOrders(req, res) {
     try {
-      const orders = await Orders.find({}).sort({createdAt: -1});
+      const orders = await Orders.find({}).sort({ createdAt: -1 });
 
       return res.status(200).json({
         success: true,
@@ -66,12 +66,12 @@ class OrdersController {
         fullName,
         phoneNumber,
         shipAddress,
-        items: orderItems, // Đổi tên biến để tránh xung đột với biến Cart
-        totalPrices,
+        items,
         status,
         shippingUnit,
         paymentMethod,
         shippingFee,
+        totalPrices,
       } = req.body;
 
       // Kiểm tra các trường bắt buộc
@@ -80,11 +80,11 @@ class OrdersController {
         'phoneNumber',
         'shipAddress',
         'items',
-        'totalPrices',
         'status',
         'shippingUnit',
         'paymentMethod',
         'shippingFee',
+        'totalPrices',
       ];
 
       const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -101,9 +101,9 @@ class OrdersController {
         fullName,
         phoneNumber,
         shipAddress,
-        items: orderItems, // Sử dụng danh sách mục của đơn hàng
-        totalPrices,
-        status: ['ordered'],
+        items: items,
+        totalPrices: totalPrices,
+        status: status,
         shippingFee,
         shippingUnit,
         paymentMethod,
@@ -111,7 +111,24 @@ class OrdersController {
       });
 
       await newOrder.save();
-      
+
+      return res.status(200).json({
+        success: true,
+        message: 'Create order successful!',
+        order: newOrder,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'An error occurred while processing the request.',
+        error: error.message,
+      });
+    }
+  }
+
+  async updateCartAfterOrder(req, res) {
+    try {
+      const { orderItems } = req.body;
       const userCart = await Carts.findOne({ userCart: req.user._id });
       if (userCart) {
         const updatedCartItems = userCart.items.filter((cartItem) => {
@@ -124,13 +141,14 @@ class OrdersController {
 
         userCart.items = updatedCartItems;
         await userCart.save();
+        return res
+          .status(200)
+          .json({ success: true, message: 'Update cart successful' });
+      } else {
+        return res
+          .status(400)
+          .json({ success: true, message: 'Update cart failed' });
       }
-
-      return res.status(200).json({
-        success: true,
-        message: 'Create order successful!',
-        order: newOrder,
-      });
     } catch (error) {
       return res.status(500).json({
         success: false,
@@ -174,23 +192,9 @@ class OrdersController {
     try {
       const { status } = req.body;
 
-      const validStatusValues = [
-        'ordered',
-        'confirm',
-        'delivering',
-        'delivered',
-        'cancelled',
-        'return',
-      ];
-      if (!validStatusValues.includes(status)) {
-        return res
-          .status(400)
-          .json({ success: false, message: 'Invalid status' });
-      }
-
       const updatedOrder = await Orders.findOneAndUpdate(
         { _id: req.params._id },
-        { $push: { status: status } },
+        { status: status },
         { new: true }
       );
 
@@ -200,9 +204,13 @@ class OrdersController {
           .json({ success: false, message: 'Order not found' });
       }
 
-      res
+      return res
         .status(200)
-        .json({ success: true, message: 'Updated order', order: updatedOrder });
+        .json({
+          success: true,
+          message: 'Updated order successful',
+          order: updatedOrder,
+        });
     } catch (error) {
       return res.status(500).json({
         success: false,

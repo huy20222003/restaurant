@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 const Orders = new Schema(
   {
     items: {
-      type: Array,
+      type: Object,
       required: true,
     },
     fullName: {
@@ -27,7 +27,7 @@ const Orders = new Schema(
       required: true,
     },
     status: {
-      type: Array,
+      type: String,
       required: true,
     },
     shippingFee: {

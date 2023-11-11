@@ -22,9 +22,12 @@ const orderApi = {
         return axiosConfig.get(url)
     },
     updateOrder: (orderId, data)=> {
-        console.log(orderId)
         const url = `/order/update-order/${orderId}`;
         return axiosConfig.patch(url, data);
+    },
+    updateCart: (orderItems) =>{
+        const url = '/order/update-cart';
+        return axiosConfig.put(url, orderItems);
     }
 }
 

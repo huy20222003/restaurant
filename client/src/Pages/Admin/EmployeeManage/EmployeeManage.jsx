@@ -131,6 +131,7 @@ const EmployeeManage = () => {
       fullName: '',
       username: '',
       email: '',
+      phoneNumber: '',
       salary: '',
       position: 'employee',
     },
@@ -144,6 +145,7 @@ const EmployeeManage = () => {
         .required('Username is required')
         .max(100, 'Maximum characters are 100'),
       email: yup.string().required('Email is required').email(),
+      phoneNumber: yup.string().required('Phone Number is required'),
       salary: yup.number().required('Salary is required'),
       position: yup.string().required('Position is required'),
     }),
@@ -344,6 +346,7 @@ const EmployeeManage = () => {
     { name: 'fullName', label: 'FullName', type: 'text' },
     { name: 'username', label: 'Username', type: 'text' },
     { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phoneNumber', label: 'Phone Number', type: 'text' },
     { name: 'salary', label: 'Salary', type: 'text' },
   ];
 

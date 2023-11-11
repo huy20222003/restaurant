@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Tooltip,
@@ -14,7 +15,10 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import PaymentIcon from '@mui/icons-material/Payment';
+import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import styled from '@emotion/styled';
+//context
+import { useRole, useAuth } from '../../../hooks/context';
 //-------------------------------------------------------------
 
 const NavLinkCustom = styled(NavLink)`
@@ -32,6 +36,24 @@ const NavLinkCustom = styled(NavLink)`
 `;
 
 const MainListItems = () => {
+  const {
+    authState: { user },
+  } = useAuth();
+  const { handleGetOneRole } = useRole();
+  const [role, setRole] = useState('');
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const response = await handleGetOneRole(user?.roles);
+        setRole(response.role.name);
+      } catch (error) {
+        console.error('Error fetching Role:', error);
+        // Xử lý lỗi theo cách bạn muốn
+      }
+    };
+
+    user?.roles && fetchRole();
+  }, [handleGetOneRole, user?.roles]);
   return (
     <>
       <Tooltip title="Dashboard" placement="right">
@@ -54,16 +76,20 @@ const MainListItems = () => {
           </ListItemButton>
         </NavLinkCustom>
       </Tooltip>
-      <Tooltip title="Employees Manage" placement="right">
-        <NavLinkCustom to="employee-manage">
-          <ListItemButton>
-            <ListItemIcon>
-              <PeopleIcon sx={{ color: '#fff' }} />
-            </ListItemIcon>
-            <ListItemText primary="Employees Manage" />
-          </ListItemButton>
-        </NavLinkCustom>
-      </Tooltip>
+      {role === 'admin' ? (
+        <Tooltip title="Employees Manage" placement="right">
+          <NavLinkCustom to="employee-manage">
+            <ListItemButton>
+              <ListItemIcon>
+                <PeopleIcon sx={{ color: '#fff' }} />
+              </ListItemIcon>
+              <ListItemText primary="Employees Manage" />
+            </ListItemButton>
+          </NavLinkCustom>
+        </Tooltip>
+      ) : (
+        ''
+      )}
       <Tooltip title="Products Manage" placement="right">
         <NavLinkCustom to="product-manage">
           <ListItemButton>
@@ -101,6 +127,16 @@ const MainListItems = () => {
               <PaymentIcon sx={{ color: '#fff' }} />
             </ListItemIcon>
             <ListItemText primary="Payments" />
+          </ListItemButton>
+        </NavLinkCustom>
+      </Tooltip>
+      <Tooltip title="Reservations" placement="right">
+        <NavLinkCustom to="reservation-manage">
+          <ListItemButton>
+            <ListItemIcon>
+              <TableRestaurantIcon sx={{ color: '#fff' }} />
+            </ListItemIcon>
+            <ListItemText primary="Reservations" />
           </ListItemButton>
         </NavLinkCustom>
       </Tooltip>

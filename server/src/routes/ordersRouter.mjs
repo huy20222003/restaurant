@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.patch('/update-order/:_id', authVerify, cashbinMiddleware, OrdersController.updateOrder);
 router.get('/filter-order', OrdersController.filterOrderByStatus);
+router.put('/update-cart', authVerify, cashbinMiddleware, OrdersController.updateCartAfterOrder);
 router.get('/getAllById', authVerify, cashbinMiddleware, OrdersController.getAllOrdersById);
 router.get('/', authVerify, cashbinMiddleware, OrdersController.getAllOrders);
 router.get('/:_id', authVerify, cashbinMiddleware, OrdersController.getSingleOrder);

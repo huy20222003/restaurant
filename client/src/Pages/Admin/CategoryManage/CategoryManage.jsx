@@ -266,8 +266,8 @@ const CategoryManage = () => {
     });
 
   const fields = [
-    { name: 'name', label: 'Tên', type: 'text', row: 1 },
-    { name: 'description', label: 'Mô tả', type: 'text', row: 5 },
+    { name: 'name', label: 'Name', type: 'text', row: 1 },
+    { name: 'description', label: 'Description', type: 'text', row: 5 },
   ];
 
   const handleView = useCallback(

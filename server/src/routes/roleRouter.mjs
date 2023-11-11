@@ -11,6 +11,6 @@ router.get('/', authVerify, cashbinMiddleware, RoleController.getAllRole);
 router.post('/create-role', authVerify, cashbinMiddleware, RoleController.addRole);
 router.patch('/update-role', authVerify, cashbinMiddleware, RoleController.updateRole);
 router.delete('/delete-role', authVerify, cashbinMiddleware, RoleController.deleteRole);
-
+router.get('/:_id', authVerify, cashbinMiddleware, RoleController.getRoleById);
 
 export default router;

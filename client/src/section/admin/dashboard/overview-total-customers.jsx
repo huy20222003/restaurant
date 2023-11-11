@@ -23,7 +23,7 @@ const OverviewTotalCustomers = (props) => {
             >
               Total Customers
             </Typography>
-            <Typography variant="h4">
+            <Typography variant="h5">
               {value}
             </Typography>
           </Stack>
@@ -80,7 +80,7 @@ const OverviewTotalCustomers = (props) => {
 OverviewTotalCustomers.propTypes = {
   difference: PropTypes.number,
   positive: PropTypes.bool,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
   sx: PropTypes.object
 };
 

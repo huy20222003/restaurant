@@ -9,6 +9,9 @@ import userRouter from './usersRouter.mjs';
 import ordersRouter from './ordersRouter.mjs';
 import roleRouter from './roleRouter.mjs';
 import paymentRouter from './paymentRouter.mjs';
+import reservationRouter from './reservationRouter.mjs';
+import tableRouter from './tableRouter.mjs';
+import reviewRouter from './reviewRouter.mjs';
 
 //------------------------------------------------------------
 
@@ -24,6 +27,10 @@ function routes(app) {
   app.use('/api/v1/order', ordersRouter);
   app.use('/api/v1/role', roleRouter);
   app.use('/api/v1/payment', paymentRouter);
+  app.use('/api/v1/reservation', reservationRouter);
+  app.use('/api/v1/table', tableRouter);
+  app.use('/api/v1/review', reviewRouter);
+  
 }
 
 export default routes;

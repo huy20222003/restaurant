@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -34,7 +35,10 @@ const StyledRoot = styled('div')(({ theme }) => ({
 
 export default function CartWidget() {
   const navigate = useNavigate();
-  const {cartState: {items}} = useCart();
+  const {cartState: {items}, handleGetCart} = useCart();
+  useEffect(() => {
+    handleGetCart();
+  }, [handleGetCart]);
   const handleNavigateToCartPage = ()=> {
     navigate('/dashboard/cart');
   }

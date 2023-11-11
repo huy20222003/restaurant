@@ -1,39 +1,73 @@
-import { memo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 //@mui
 import { Box, Button, Divider, Paper, Stack, Typography } from '@mui/material';
 //component
 import OrderTimeLine from './OrderTimeLine';
+import FormDialogReview from '../../../Components/FormDialog/FormDialogReview';
 //context
-import { useOrder } from '../../../hooks/context';
+import { useCommon, useReview } from '../../../hooks/context';
 //sweetalert
 import Swal from 'sweetalert2';
+//formik
+import { useFormik } from 'formik';
+//yup
+import * as yup from 'yup';
 //-------------------------------------------------
 
-const OrderDetail = ({ orderInfo }) => {
-  const { handleUpdateOrder } = useOrder();
+const OrderDetail = ({ orderInfo, handleUpdate }) => {
+  const { setOpenFormDialog } = useCommon();
+  const { handleCreateReview, handleUpdateOrderAfterReview } = useReview();
   const { _id } = useParams();
-  const handleUpdate = useCallback(
-    async (type) => {
-      if (!type) {
-        return;
-      }
+  const { items, totalPrices, shippingFee, status } = orderInfo;
 
-      const response = await handleUpdateOrder(_id, { status: type });
-      if (!response.success) {
-        Swal.fire('', `${type} failed`, 'error');
-      } else {
-        Swal.fire('', `${type} success`, 'success');
-      }
+  const formik = useFormik({
+    initialValues: {
+      rate: 1,
+      review: '',
+      productId: '',
+      orderId: _id,
     },
-    [_id, handleUpdateOrder]
-  );
+    validationSchema: yup.object({
+      rate: yup.number('Rate must number').required('Rate is required'),
+      review: yup.string().max(1000, 'The maxium character is 10000'),
+      productId: yup.string().required('Product Id is required'),
+      orderId: yup.string().required('Order Id is required'),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const response = await handleCreateReview(values);
+        if (!response.success) {
+          Swal.fire('', 'Add review failed', 'error');
+        } else {
+          const updateOrderData = await handleUpdateOrderAfterReview({
+            orderId: formik.values.orderId,
+            productId: formik.values.productId,
+          });
+          if (!updateOrderData.success) {
+            Swal.fire('', 'Add review failed', 'error');
+          } else {
+            Swal.fire('', 'Add review successful', 'success');
+          }
+        }
+        setTimeout(window.location.reload(), 3000);
+      } catch (error) {
+        Swal.fire('Error', 'Server Error', 'error');
+      }
+      setOpenFormDialog(false);
+      formik.setValues({});
+    },
+  });
+
   if (!orderInfo) {
     return null;
   }
+  const fields = [{ name: 'review', label: 'Review', type: 'text', row: 5 }];
 
-  const { items, totalPrices, shippingFee, status } = orderInfo;
+  const handleOpenFormDialog = (item) => {
+    setOpenFormDialog(true);
+    formik.setFieldValue('productId', item.product._id);
+  };
 
   return (
     <Box>
@@ -49,11 +83,14 @@ const OrderDetail = ({ orderInfo }) => {
       >
         <Box>
           <Typography variant="h6">Details</Typography>
-          <Stack sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Box sx={{ p: '16px 0', width: '100%' }}>
-              {items.map((item) => (
+          {items.map((item) => (
+            <Stack
+              key={item.product._id}
+              sx={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
+              <Box sx={{ p: '16px 0', width: '100%' }}>
                 <Stack
-                  key={item.product.name}
+                  key={item?.product?.name}
                   sx={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
@@ -130,11 +167,31 @@ const OrderDetail = ({ orderInfo }) => {
                     <Typography variant="body2">
                       {item?.product?.priceSale || item?.product?.price}
                     </Typography>
+                    {item.isReview === false && status === 'delivered' ? (
+                      <Button
+                        variant="contained"
+                        color="warning"
+                        size="medium"
+                        sx={{ color: '#fff' }}
+                        onClick={() => handleOpenFormDialog(item)}
+                      >
+                        Review
+                      </Button>
+                    ) : (
+                      ''
+                    )}
                   </Box>
                 </Stack>
-              ))}
-            </Box>
-          </Stack>
+                <FormDialogReview
+                  fields={fields}
+                  formik={formik}
+                  handleSave={formik.handleSubmit}
+                  item={item}
+                />
+              </Box>
+              <Divider />
+            </Stack>
+          ))}
           <Divider />
           <Box sx={{ p: '12px 0' }}>
             <Stack sx={{ gap: '12px', alignItems: 'flex-end' }}>
@@ -197,7 +254,7 @@ const OrderDetail = ({ orderInfo }) => {
                   {parseFloat(totalPrices)}
                 </Typography>
               </Stack>
-              {status[0] !== 'return' ? (
+              {status !== 'return' ? (
                 <Stack
                   sx={{
                     flexDirection: 'row',
@@ -206,23 +263,16 @@ const OrderDetail = ({ orderInfo }) => {
                     pt: '1rem',
                   }}
                 >
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    disabled={Array.isArray(orderInfo) && orderInfo.length > 0 && orderInfo[orderInfo.length - 1] === 'Confirm'}
-                    onClick={() => handleUpdate('return')}
-                  >
-                    Return
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disabled
-                    //disabled={Array.isArray(orderInfo) && orderInfo.length > 0 && orderInfo[orderInfo.length - 1] === 'confirm'}
-                    onClick={() => handleUpdate('delivered')}
-                  >
-                    Delivered
-                  </Button>
+                  {status !== 'delivered' && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      disabled={orderInfo?.status !== 'confirmed'}
+                      onClick={handleUpdate}
+                    >
+                      Delivered
+                    </Button>
+                  )}
                 </Stack>
               ) : (
                 <Button variant="outlined" color="error">
@@ -243,7 +293,7 @@ const OrderDetail = ({ orderInfo }) => {
           p: '1rem',
         }}
       >
-        <OrderTimeLine status={orderInfo.status} />
+        <OrderTimeLine orderInfo={orderInfo} />
       </Paper>
     </Box>
   );
@@ -251,7 +301,7 @@ const OrderDetail = ({ orderInfo }) => {
 
 OrderDetail.propTypes = {
   orderInfo: PropTypes.shape({
-    items: PropTypes.arrayOf(
+    items: PropTypes.objectOf(
       PropTypes.shape({
         product: PropTypes.shape({
           name: PropTypes.string,
@@ -268,8 +318,10 @@ OrderDetail.propTypes = {
     ),
     totalPrices: PropTypes.number,
     shippingFee: PropTypes.number,
-    status: PropTypes.array,
+    isReview: PropTypes.bool,
+    status: PropTypes.arrayOf(PropTypes.string),
   }),
+  handleUpdate: PropTypes.func,
 };
 
-export default memo(OrderDetail);
+export default OrderDetail;

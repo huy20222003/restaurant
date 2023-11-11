@@ -72,7 +72,7 @@ const PaymentManage = () => {
                 ? 'success.light'
                 : params.value === 'pending'
                 ? 'error.light'
-                : 'info.light',
+                : 'error.light',
             p: '0.25rem 0.5rem',
             borderRadius: '0.25rem',
           }}

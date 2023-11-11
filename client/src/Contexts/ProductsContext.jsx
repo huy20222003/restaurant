@@ -17,6 +17,7 @@ import {
   searchProduct,
   filterProduct,
   sortProduct,
+  filterProductByCategory,
 } from '../Reducers/ProductsReducer/action';
 //api
 import productApi from '../Service/productApi';
@@ -43,7 +44,7 @@ export const ProductsProvider = (prop) => {
   };
 
   const handleGetAllProducts = useCallback(async () => {
-    const pageSize = 30;
+    const pageSize = 50;
     try {
       const response = await productApi.getAll(currentPage, pageSize);
       if (response.data.success) {
@@ -147,6 +148,15 @@ export const ProductsProvider = (prop) => {
     dispatch(sortProduct(sortedProducts));
   };
 
+  const handleFilterProductsByCategory = async(filtervalue)=> {
+    try {
+      const response = await productApi.filterProductsByCategory(filtervalue);
+      dispatch(filterProductByCategory(response.data.products));
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
   const ProductsData = {
     quantity,
     setQuantity,
@@ -163,6 +173,7 @@ export const ProductsProvider = (prop) => {
     handleSearchProduct,
     handleSortProduct,
     handleFilterProduct,
+    handleFilterProductsByCategory,
   };
 
   return (

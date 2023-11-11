@@ -50,8 +50,6 @@ export const AuthProvider = (prop) => {
     loadUser();
   }, [loadUser]);
 
-  console.log(authState.isAuthenticated);
-
   const registerUser = async (registerForm) => {
     try {
       const response = await authApi.register(registerForm);

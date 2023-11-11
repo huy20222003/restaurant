@@ -6,7 +6,7 @@ const Reviews = new Schema ({
         required: true,
         default: 0.0
     },
-    userReview: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: 'users',
         required: true
@@ -19,6 +19,11 @@ const Reviews = new Schema ({
     productId: {
         type: Schema.Types.ObjectId,
         ref: 'products',
+        required: true,
+    },
+    orderId: {
+        type: Schema.Types.ObjectId,
+        ref: 'orders',
         required: true,
     }
 }, {

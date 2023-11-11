@@ -1,5 +1,8 @@
 import Payment from '../models/Payment.mjs';
 import Orders from '../models/Orders.mjs';
+import Users from '../models/Users.mjs';
+import Products from '../models/Products.mjs';
+import Carts from '../models/Carts.mjs';
 import moment from 'moment';
 import dateFormat from 'dateformat';
 import qs from 'qs';
@@ -8,7 +11,7 @@ import crypto from 'crypto';
 class PaymentController {
   async getAllPayments(req, res) {
     try {
-      const payments = await Payment.find({}).sort({createdAt: -1});
+      const payments = await Payment.find({}).sort({ createdAt: -1 });
 
       return res.status(200).json({
         success: true,
@@ -26,7 +29,7 @@ class PaymentController {
 
   async createPayment(req, res) {
     try {
-      const { sender, description, amount, paymentMethod } = req.body;
+      const { sender, description, amount, paymentMethod, status } = req.body;
 
       const newPayment = new Payment({
         sender,
@@ -34,11 +37,35 @@ class PaymentController {
         amount,
         paymentMethod,
         userPayment: req.user._id,
+        status,
       });
       await newPayment.save();
-      return res
-        .status(200)
-        .json({ success: true, message: 'Create payment successful' });
+      return res.status(200).json({
+        success: true,
+        message: 'Create payment successful',
+        payment: newPayment,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'An error occurred while processing the request.',
+        error: error.message,
+      });
+    }
+  }
+
+  async getOnePayment(req, res) {
+    try {
+      const payment = await Payment.findById(req.params._id);
+      if (!payment) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'Payment not found' });
+      } else {
+        return res
+          .status(200)
+          .json({ success: true, message: 'Payment found', payment });
+      }
     } catch (error) {
       return res.status(500).json({
         success: false,
@@ -64,9 +91,8 @@ class PaymentController {
     let createDate = moment(date).format('YYYYMMDDHHmmss');
     var orderId = dateFormat(date, 'HHmmss');
     var amount = req.body.amount;
-    var bankCode = 'VNBANK'; //'VNPAYQR' //req.body.bankCode;
-    var orderData = { userId: req.user._id, data: req.body.orderInfo };
-    var orderInfo = JSON.stringify(orderData);
+    var bankCode = '';
+    var orderInfo = req.body.orderInfo;
     var orderType = 100000;
     var locale = 'vn';
     if (locale === null || locale === '') {
@@ -113,7 +139,6 @@ class PaymentController {
   async vnpayIPN(req, res, next) {
     let vnp_Params = req.query;
     let secureHash = vnp_Params['vnp_SecureHash'];
-    let orderId = vnp_Params['vnp_TxnRef'];
     let rspCode = vnp_Params['vnp_ResponseCode'];
 
     delete vnp_Params['vnp_SecureHash'];
@@ -126,25 +151,54 @@ class PaymentController {
     let signed = hmac.update(new Buffer.from(signData, 'utf-8')).digest('hex');
     let paymentStatus = '0'; // Giả sử '0' là trạng thái khởi tạo giao dịch, chưa có IPN. Trạng thái này được lưu khi yêu cầu thanh toán chuyển hướng sang Cổng thanh toán VNPAY tại đầu khởi tạo đơn hàng.
     //let paymentStatus = '1'; // Giả sử '1' là trạng thái thành công bạn cập nhật sau IPN được gọi và trả kết quả về nó
-    //let paymentStatus = '2'; // Giả sử '2' là trạng thái thất bại bạn cập nhật sau IPN được gọi và trả kết quả về nó
-    let checkOrderId = true; // Mã đơn hàng "giá trị của vnp_TxnRef" VNPAY phản hồi tồn tại trong CSDL của bạn
-    let checkAmount = true; // Kiểm tra số tiền "giá trị của vnp_Amout/100" trùng khớp với số tiền của đơn hàng trong CSDL của bạn
-    const orderInfo = vnp_Params['vnp_OrderInfo'];
-    console.log(orderInfo);
+    //let paymentStatus = '2'; // Giả sử '2' là trạng thái thất bại bạn cập nhật sau IPN được gọi và trả kết quả về
+    let orderInfo = vnp_Params['vnp_OrderInfo'];
+    let data = orderInfo.split('+');
+    let orderId = data[3];
+    let paymentId = data[6];
+    let payment = await Payment.findById(paymentId);
+    let order = await Orders.findById(orderId);
     if (secureHash === signed) {
       //kiểm tra checksum
-      if (checkOrderId) {
-        if (checkAmount) {
+      if (order) {
+        if (payment.amount == JSON.parse(vnp_Params['vnp_Amount'] / 100)) {
           if (paymentStatus == '0') {
             //kiểm tra tình trạng giao dịch trước khi cập nhật tình trạng thanh toán
-            if (rspCode == '00') {
-              console.log(orderInfo);
-              // next();
+            if (rspCode === '00') {
+              payment.status = 'success';
+              await payment.save();
+
+              const userCart = await Carts.findOne({
+                userCart: payment.userPayment,
+              });
+              if (userCart) {
+                const updatedCartItems = userCart.items.filter((cartItem) => {
+                  const existsInOrder = order.items.some((orderItem) =>
+                    cartItem.product._id.equals(orderItem.product._id)
+                  );
+
+                  return !existsInOrder;
+                });
+
+                userCart.items = updatedCartItems;
+                await userCart.save();
+              }
+
+              req.data = {
+                paymentId: payment._id,
+              };
             } else {
-              const order = Orders.findByIdAndDelete(orderInfo);
-             console.log(orderInfo);
-              // next();
+              order.status = 'cancelled';
+              await order.save();
+
+              payment.status = 'cancelled';
+              await payment.save();
+
+              req.data = {
+                paymentId: payment._id,
+              };
             }
+            next();
           } else {
             res.status(200).json({
               RspCode: '02',
@@ -179,8 +233,7 @@ class PaymentController {
 
     if (secureHash === signed) {
       //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
-
-      res
+      return res
         .status(200)
         .json({ success: true, code: vnp_Params['vnp_ResponseCode'] });
     } else {
@@ -190,15 +243,30 @@ class PaymentController {
 
   async donePayment(req, res) {
     try {
-      const { rspCode } = req.data;
-      if (rspCode == '00') {
-        return res
-          .status(200)
-          .json({ success: true, message: 'Payment successful' });
+      const { paymentId } = req.data;
+      const url = process.env.payment_status;
+      return res.redirect(url + '/' + paymentId);
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'An error occurred while processing the request.',
+        error: error.message,
+      });
+    }
+  }
+
+  async updatePayment(req, res) {
+    try {
+      const { status, paymentId } = req.body;
+      const payment = await Payment.findByIdAndUpdate(
+        paymentId,
+        { status: status },
+        { new: true }
+      );
+      if(!payment) {
+        return res.status(400).json({success: false, message: 'Update payment failed'});
       } else {
-        return res
-          .status(400)
-          .json({ success: false, message: 'Payment failed' });
+        return res.status(200).json({success: true, message: 'Updated payment', payment});
       }
     } catch (error) {
       return res.status(500).json({

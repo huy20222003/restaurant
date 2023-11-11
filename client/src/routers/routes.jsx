@@ -21,8 +21,14 @@ const OrderPage = lazy(() => import('../Pages/User/OrderPage/OrderPage'));
 const OrderPageDetail = lazy(() =>
   import('../Pages/User/OrderPage/OrderPageDetail')
 );
+const PaymentStatus = lazy(() =>
+  import('../Pages/User/OrderPage/PaymentStatus')
+);
 const Reservation = lazy(() =>
   import('../Pages/User/Reservation/Reservation')
+);
+const ReservationList = lazy(() =>
+  import('../Pages/User/Reservation/ReservationList')
 );
 const ProfilePage = lazy(() => import('../Pages/User/ProfilePage'));
 const FAQPage = lazy(() => import('../Pages/User/FAQPage'));
@@ -65,6 +71,7 @@ const OrderDetail = lazy(() =>
   import('../Pages/Admin/OrderManage/OrderDetail')
 );
 const PaymentManage = lazy(() => import('../Pages/Admin/PaymentManage/PaymentManage'));
+const ReservationManage = lazy(() => import('../Pages/Admin/ReservationManage/ReservationManage'));
 const ProfileAdminPage = lazy(() => import('../Pages/Admin/Profile'));
 const SettingAdminPage = lazy(() => import('../Pages/Admin/Setting'));
 //loader
@@ -111,10 +118,25 @@ export default function Router() {
           ),
         },
         {
+          path: 'reservation/reservation-list',
+          element: (
+            <PrivateRouter element={<ReservationList />} redirectTo="/auth/login" />
+          ),
+        },
+        {
           path: 'order/:_id',
           element: (
             <PrivateRouter
               element={<OrderPageDetail />}
+              redirectTo="/auth/login"
+            />
+          ),
+        },
+        {
+          path: 'order/payment-status/:_id',
+          element: (
+            <PrivateRouter
+              element={<PaymentStatus />}
               redirectTo="/auth/login"
             />
           ),
@@ -263,6 +285,15 @@ export default function Router() {
           element: (
             <PrivateRouter
               element={<PaymentManage />}
+              redirectTo="/auth/admin/login"
+            />
+          ),
+        },
+        {
+          path: 'reservation-manage',
+          element: (
+            <PrivateRouter
+              element={<ReservationManage />}
               redirectTo="/auth/admin/login"
             />
           ),

@@ -47,8 +47,8 @@ const deliveryOptions = [
     icon: 'mdi:truck',
   },
   {
-    id: 'jnt',
-    name: 'J&T Express',
+    id: 'premium',
+    name: 'Premium',
     description: '4-5 days delivery',
     price: 22000,
     icon: 'mdi:bird',

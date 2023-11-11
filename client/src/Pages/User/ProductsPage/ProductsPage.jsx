@@ -1,7 +1,7 @@
 import { useEffect, useState, Suspense, lazy } from 'react';
 import { Helmet } from 'react-helmet-async';
 // @mui
-import { Container, Stack, Typography } from '@mui/material';
+import { Container, Stack, Typography, Box } from '@mui/material';
 // components
 import {
   ProductSort,
@@ -69,9 +69,9 @@ export default function ProductsPage() {
           <ProductList products={products} />
         </Suspense>
         <ProductCartWidget />
-        {/* <Box sx={{mt: '0.8rem'}}>
+        <Box sx={{mt: '0.8rem'}}>
           <ProductPagnition />
-        </Box> */}
+        </Box>
       </Container>
     </>
   );
