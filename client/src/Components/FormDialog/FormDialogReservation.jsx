@@ -60,7 +60,7 @@ const FormDialogReservation = (props) => {
           />
           <Box sx={{ my: '0.25rem' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DateTimePicker']}>
+              <DemoContainer components={['DateTimePicker']} >
                 <DateTimePicker
                   label="Reservation Date"
                   value={formik.values.reservationDate || today}

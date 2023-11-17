@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 // @mui
@@ -56,36 +56,62 @@ const Login = () => {
   const { loginUser, loadUser } = useAuth();
   const navigate = useNavigate();
 
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    username: '',
+    password: '1234567'
+  });
 
   const signInWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const data = await signInWithPopup(auth, provider);
-      setUser({
-        username: data.user.uid,
-        password: '1234567'
-      });
-      try {
-        const response = await loginUser(user);
-        if(!response.success) {
-          Swal.fire('Failed', 'Login Failed', 'error')
-        } else {
-          const expiration = new Date();
-          expiration.setTime(expiration.getTime() + 15 * 60 * 1000);
-          Cookies.set('user', response.accessToken, { expires: expiration });
-          Cookies.set('refresh', response.refreshToken, { expires: 365 });
-          await loadUser();
-          Swal.fire('Success', 'Login Success', 'success');
-          navigate('/dashboard/app');
-        }
-      } catch (error) {
-        Swal.fire('Error', 'Server Error', 'error');
-      }
+      setUserData(data);
     } catch (error) {
-      Swal.fire('Error', 'Server Error', 'error');
+      handleError();
     }
   };
+
+  const setUserData = (data) => {
+    const userData = {
+      ...user,
+      username: data?.user?.uid,
+    };
+    setUser(userData);
+  };
+
+  useEffect(() => {
+    if (user?.username !== '') {
+      processLogin();
+    }
+  }, [user]);
+
+  const processLogin = useCallback(async () => {
+    try {
+      const response = await loginUser(user);
+      if (!response.success) {
+        Swal.fire('Failed', 'Login Failed', 'error');
+      } else {
+        handleLoginSuccess(response);
+      }
+    } catch (error) {
+      handleError();
+    }
+  }, [loginUser, user]);
+
+  const handleLoginSuccess = useCallback((response) => {
+    const expiration = new Date();
+    expiration.setTime(expiration.getTime() + 15 * 60 * 1000);
+    Cookies.set('user', response.accessToken, { expires: expiration });
+    Cookies.set('refresh', response.refreshToken, { expires: 365 });
+    loadUser();
+    Swal.fire('Success', 'Login Success', 'success');
+    navigate('/dashboard/app');
+  }, [loadUser, navigate]);
+
+  const handleError = () => {
+    Swal.fire('Error', 'Server Error', 'error');
+  };
+
 
   return (
     <>

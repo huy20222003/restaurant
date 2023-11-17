@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
+import { Box } from '@mui/material';
 //
 import Header from './header';
 import Nav from './nav';
-
+import FixedBottomNavigation from './bottom/FixedBottomNavigation';
+import ChatBox from '../../section/@dashboard/chatbot/ChatBot';
 // ----------------------------------------------------------------------
 
 const APP_BAR_MOBILE = 64;
@@ -34,16 +36,38 @@ const Main = styled('div')(({ theme }) => ({
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
+  const [showBottomNavigation, setShowBottomNavigation] = useState(false);
+
+  const handleResize = () => {
+    const screenWidth = window.innerWidth;
+    setShowBottomNavigation(screenWidth <= 740);
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
-    <StyledRoot>
-      <Header onOpenNav={() => setOpen(true)} />
+    <>
+      <StyledRoot>
+        <Header onOpenNav={() => setOpen(true)} />
 
-      <Nav openNav={open} onCloseNav={() => setOpen(false)} />
+        <Nav openNav={open} onCloseNav={() => setOpen(false)} />
 
-      <Main>
-        <Outlet />
-      </Main>
-    </StyledRoot>
+        <Main>
+          <Outlet />
+        </Main>
+      </StyledRoot>
+      {showBottomNavigation && (
+        <Box>
+          <FixedBottomNavigation />
+        </Box>
+      )}
+      <ChatBox />
+    </>
   );
 }

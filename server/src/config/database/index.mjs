@@ -5,7 +5,7 @@ import { connect } from 'mongoose';
 async function connectDB() {
   try {
     connect(
-      `mongodb+srv://${process.env.DB_USERNAME}:${DB_PASSWORD}@cluster0.uztxur5.mongodb.net/?retryWrites=true&w=majority`,
+      `mongodb://127.0.0.1/restaurant`,
       {
         useNewUrlParser: true
       }

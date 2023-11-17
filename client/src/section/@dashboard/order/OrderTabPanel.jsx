@@ -41,8 +41,8 @@ const OrderTabPanel = () => {
                   order?.status === 'ordered' ? 'success.main' : 'info.main',
               }}
             >
-              <Iconify icon="material-symbols:check" sx={{mr: '0.2rem'}} />
-              <Typography variant='body2'>{order?.status}</Typography>
+              <Iconify icon="material-symbols:check" sx={{ mr: '0.2rem' }} />
+              <Typography variant="body2">{order?.status}</Typography>
             </Stack>
           )}
           <Divider />
@@ -86,7 +86,7 @@ const OrderTabPanel = () => {
                       borderTopLeftRadius: '10px',
                     }}
                   >
-                    x{order.items?.quantity}
+                    x{order.items[0]?.quantity}
                   </Typography>
                 </Box>
                 <Stack sx={{ mx: '12px' }}>
@@ -94,18 +94,21 @@ const OrderTabPanel = () => {
                     {order.items[0]?.product?.name}
                   </Typography>
                   <Stack sx={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Typography
+                    {order.items[0]?.property?.size &&
+                      <Typography
                       variant="caption"
-                      sx={{ color: 'rgb(128, 128, 137)' }}
+                      sx={{ color: 'rgb(128, 128, 137)', mr: '0.5rem' }}
                     >
                       size: {order.items[0]?.property?.size}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: 'rgb(128, 128, 137)' }}
-                    >
-                      màu: {order.items[0]?.property?.color}
-                    </Typography>
+                    </Typography>}
+                    {order.items[0]?.property?.color && (
+                      <Typography
+                        variant="caption"
+                        sx={{ color: 'rgb(128, 128, 137)', mr: '0.5rem' }}
+                      >
+                        màu: {order.items[0]?.property?.color}
+                      </Typography>
+                    )}
                   </Stack>
                 </Stack>
               </Box>

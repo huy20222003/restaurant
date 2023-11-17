@@ -12,6 +12,8 @@ import {
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { keyframes } from '@mui/system';
+//context
+import { useAuth } from '../../../../hooks/context';
 //----------------------------------------------------------------------
 
 const StyledButton = styled(Button)`
@@ -74,13 +76,22 @@ const StyledButtonBaseBuy = styled(ButtonBase)`
 `;
 
 const Nav = () => {
+  const {
+    authState: { isAuthenticated },
+  } = useAuth();
   return (
-    <>
+    <Stack
+      sx={{
+        flexDirection: { xs: 'column', sm: 'column', md: 'row', lg: 'row' },
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}
+    >
       <Stack
         component="nav"
         sx={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: { xs: 'column', sm: 'column', md: 'row', lg: 'row' },
           gap: '40px',
           height: '100%',
         }}
@@ -88,7 +99,11 @@ const Nav = () => {
         <Typography component={Link} href="/" sx={{ textDecoration: 'none' }}>
           <StyledButton>Home</StyledButton>
         </Typography>
-        <Typography component={Link} href="/about" sx={{ textDecoration: 'none' }}>
+        <Typography
+          component={Link}
+          href="/about"
+          sx={{ textDecoration: 'none' }}
+        >
           <StyledButton>About us</StyledButton>
         </Typography>
         <Typography
@@ -98,18 +113,10 @@ const Nav = () => {
         >
           <StyledButton>Products</StyledButton>
         </Typography>
-        <Typography
-          component={Link}
-          href="faq"
-          sx={{ textDecoration: 'none' }}
-        >
+        <Typography component={Link} href="faq" sx={{ textDecoration: 'none' }}>
           <StyledButton>FAQs</StyledButton>
         </Typography>
-        <Typography
-          component={Link}
-          href="/"
-          sx={{ textDecoration: 'none' }}
-        >
+        <Typography component={Link} href="/" sx={{ textDecoration: 'none' }}>
           <StyledButton>Contact us</StyledButton>
         </Typography>
       </Stack>
@@ -169,7 +176,7 @@ const Nav = () => {
           </Badge>
           <StyledButtonBaseBuy>
             <Link
-              href="/auth/login"
+              href={isAuthenticated ? '/dashboard/products' : '/auth/login'}
               style={{ color: '#fff', textDecoration: 'none' }}
             >
               Buy Now
@@ -177,7 +184,7 @@ const Nav = () => {
           </StyledButtonBaseBuy>
         </Stack>
       </Stack>
-    </>
+    </Stack>
   );
 };
 

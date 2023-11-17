@@ -73,7 +73,7 @@ const OrderPageDetail = () => {
               <Stack
                 sx={{ flexDirection: 'row', gap: '8px', alignItems: 'center' }}
               >
-                <Typography variant="h5">Order #{orderInfo._id}</Typography>
+                <Typography variant="h5">Order #{orderInfo._id.substring(0, 100)}{orderInfo._id.length > 100 && '...'}</Typography>
                 <Typography
                   variant="overline"
                   sx={{

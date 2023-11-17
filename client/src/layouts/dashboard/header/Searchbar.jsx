@@ -8,10 +8,17 @@ import {
   IconButton,
   InputAdornment,
   ClickAwayListener,
+  Box,
 } from '@mui/material';
+//icon
+import MicIcon from '@mui/icons-material/Mic';
+//util
 import { bgBlur } from '../../../utils/cssStyles';
+//Components
 import Iconify from '../../../Components/User/iconify';
+//Contexts
 import { ProductsContext } from '../../../Contexts/ProductsContext';
+//-------------------------------------------------------------
 
 const HEADER_MOBILE = 64;
 const HEADER_DESKTOP = 92;
@@ -68,6 +75,17 @@ export default function Searchbar() {
     }
   };
 
+  const startSpeechRecognition = ()=>  {
+    var recognition =new webkitSpeechRecognition() || new SpeechRecognition();
+    
+    recognition.onresult = function(event) {
+        var result = event.results[0][0].transcript;
+        startTransition(() => setSearchValue(result));
+    };
+    
+    recognition.start();
+}
+
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div>
@@ -96,6 +114,9 @@ export default function Searchbar() {
                 }
                 sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
               />
+              <Box sx={{ mr: '1rem' }}>
+                <MicIcon sx={{ color: '#000', cursor: 'pointer' }} onClick={startSpeechRecognition} />
+              </Box>
               <Button variant="contained" onClick={handleSearch}>
                 Search
               </Button>

@@ -8,9 +8,12 @@ import {
   RecentlyProducts,
   PopularProducts,
 } from '../../../section/@dashboard/app';
+//context
+import { useAuth } from '../../../hooks/context';
 // ----------------------------------------------------------------------
 
 const DashboardAppPage = () => {
+  const {authState: {user}} = useAuth();
   return (
     <>
       <Helmet>
@@ -19,7 +22,7 @@ const DashboardAppPage = () => {
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back
+          Hi, {user?.fullName}
         </Typography>
 
         <Box>

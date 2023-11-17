@@ -60,6 +60,8 @@ const AdminDashboard = () => {
     handleGetAllUser();
   }, [handleGetAllUser]);
 
+  const orderArr = orders.filter((order) => order.status !== 'cancelled');
+
   const profitArr = payments.filter((payment) => payment.status == 'success');
 
   const profit = profitArr.reduce((total, curr) => {
@@ -71,39 +73,48 @@ const AdminDashboard = () => {
   const lastMonth = currentDate.getMonth();
 
   const usersInCurrentMonth = users.filter((user) => {
-    const createdAtDate = parse(
-      user.createdAt,
-      "EEE MMM dd yyyy HH:mm:ss 'GMT'xxxx",
-      new Date()
-    );
+    const createdAtDate = new Date(user.createdAt);
     const createdAtMonth = createdAtDate.getMonth() + 1;
     return createdAtMonth === currentMonth;
   });
 
   const usersInLastMonth = users.filter((user) => {
-    const createdAtDate = parse(
-      user.createdAt,
-      "EEE MMM dd yyyy HH:mm:ss 'GMT'xxxx",
-      new Date()
-    );
-    const createdLastMonth = createdAtDate.getMonth();
+    const createdAtDate = new Date(user.createdAt);
+    const createdLastMonth = createdAtDate.getMonth() + 1;
     return createdLastMonth === lastMonth;
   });
 
-  const difference = isNaN(
-    (usersInCurrentMonth.length / usersInLastMonth.length) * 100
-  )
-    ? (usersInCurrentMonth.length / usersInLastMonth.length) * 100
-    : '0';
+  const differenceUser =
+    (usersInCurrentMonth.length / usersInLastMonth.length) * 100;
 
-  const ordersArr = orders.filter((order)=>order.status !== 'cancelled');
+  const ordersInCurrentMonth = orders.filter((order) => {
+    const createdAtDate = new Date(order.createdAt);
+    const createdAtMonth = createdAtDate.getMonth() + 1;
+    return createdAtMonth === currentMonth;
+  });
 
-  const totalQuantity = ordersArr.reduce((total, curr)=> {
-    const items = curr.items.reduce((total, curr)=> {
-      return total + curr.quantity
+  const ordersInLastMonth = orders.filter((order) => {
+    const createdAtDate = new Date(order.createdAt);
+    const createdLastMonth = createdAtDate.getMonth() + 1;
+    return createdLastMonth === lastMonth;
+  });
+
+  const totalQuantityCurrentMonth = ordersInCurrentMonth.reduce((total, curr) => {
+    const items = curr.items.reduce((total, curr) => {
+      return total + curr.quantity;
     }, 0);
     return total + items;
   }, 0);
+
+  const totalQuantityLastMonth = ordersInLastMonth.reduce((total, curr) => {
+    const items = curr.items.reduce((total, curr) => {
+      return total + curr.quantity;
+    }, 0);
+    return total + items;
+  }, 0);
+  
+  const differenceOrder =
+    (totalQuantityCurrentMonth.length / !isNaN(totalQuantityLastMonth.length) ? totalQuantityLastMonth.length : 1) * 100;
 
   return (
     <>
@@ -121,16 +132,16 @@ const AdminDashboard = () => {
           <Grid container spacing={3}>
             <Grid xs={12} sm={6} lg={3}>
               <OverviewTotalQuantity
-                difference={12}
-                positive
+                difference={differenceOrder ? differenceOrder : 0}
+                positive={ordersInCurrentMonth >= ordersInLastMonth ? true : false}
                 sx={{ height: '100%' }}
-                value={totalQuantity}
+                value={!isNaN(ordersInCurrentMonth) + !isNaN(ordersInLastMonth ? ordersInLastMonth : 0)}
               />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
               <OverviewTotalCustomers
-                difference={difference}
-                positive={usersInCurrentMonth > usersInLastMonth ? true : false}
+                difference={differenceUser ? differenceUser : 0}
+                positive={usersInCurrentMonth >= usersInLastMonth ? true : false}
                 sx={{ height: '100%' }}
                 value={users.length}
               />
@@ -138,13 +149,13 @@ const AdminDashboard = () => {
             <Grid xs={12} sm={6} lg={3}>
               <OverviewTotalOrder
                 sx={{ height: '100%' }}
-                value={orders.length}
+                value={orderArr.length}
               />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
               <OverviewTotalProfit
                 sx={{ height: '100%' }}
-                value={fCurrency(profit) + 'đ'}
+                value={fCurrency(profit) || 0 + 'đ'}
               />
             </Grid>
             <Grid xs={12} lg={12}>

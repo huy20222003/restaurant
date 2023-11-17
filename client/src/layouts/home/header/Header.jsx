@@ -1,15 +1,26 @@
+import { useState } from 'react';
 //@mui
 import styled from '@emotion/styled';
-import { Paper, Toolbar, Container, Box, Typography, Link } from '@mui/material';
+import {
+  Paper,
+  Toolbar,
+  Container,
+  Box,
+  Typography,
+  Link,
+} from '@mui/material';
 //component
 import Logo from '../../../Components/User/logo';
 import Nav from './nav';
-
+//icon
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 //-------------------------------------------------------
 
 const StyledPaper = styled(Paper)`
   && {
-    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, opacity 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      opacity 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     background-image: none;
     display: flex;
     flex-direction: column;
@@ -21,10 +32,10 @@ const StyledPaper = styled(Paper)`
     top: 0px;
     left: auto;
     right: 0px;
-    background-color: rgba(255, 255, 255, 0.9); 
+    background-color: rgba(255, 255, 255, 0.9);
     color: inherit;
     box-shadow: none;
-    opacity: 0.95; 
+    opacity: 0.95;
     border-radius: 0;
   }
 `;
@@ -42,7 +53,7 @@ const StyledToolbar = styled(Toolbar)`
 
 const StyledContainer = styled(Container)`
   && {
-    width: 100%;
+    width: 100vư;
     margin-left: auto;
     box-sizing: border-box;
     margin-right: auto;
@@ -55,7 +66,7 @@ const StyledContainer = styled(Container)`
   }
 `;
 
-const StyledSpan = styled('span')(({ theme }) => ({
+const StyledSpan = styled('span')(() => ({
   minWidth: '24px',
   lineHeight: 0,
   borderRadius: '6px',
@@ -79,19 +90,39 @@ const StyledSpan = styled('span')(({ theme }) => ({
 }));
 
 const Header = () => {
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setOpen(!open);
+  };
+
   return (
     <StyledPaper elevation={4} component="header">
       <StyledToolbar>
         <StyledContainer>
           <Box sx={{ lineHeight: 0, position: 'relative' }}>
             <Typography sx={{ lineHeight: 0, m: 0 }} component={Link} href="/">
-              <Logo />
+              <Logo
+                sx={{
+                  width: { xs: '1rem', sm: '1rem', md: '2rem', lg: '2rem' },
+                  height: { xs: '1rem', sm: '1rem', md: '2rem', lg: '2rem' },
+                }}
+              />
             </Typography>
             <Typography sx={{ lineHeight: 0, m: 0 }} component={Link} href="/">
               <StyledSpan>v1.0</StyledSpan>
             </Typography>
           </Box>
-          <Nav />
+          <Box sx={{ mt: '2rem' }}>
+              <Nav />
+            </Box>
+          <Box
+            sx={{
+              display: { xs: 'block', sm: 'block', md: 'none', lg: 'none' },
+            }}
+          >
+            {open ? <CloseIcon onClick={toggleDrawer} /> : <MenuIcon onClick={toggleDrawer} />}
+          </Box>
         </StyledContainer>
       </StyledToolbar>
     </StyledPaper>

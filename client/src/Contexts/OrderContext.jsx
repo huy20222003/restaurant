@@ -70,7 +70,7 @@ export const OrdersProvider = (prop) => {
 
   const handleFilterOrderByStatus = useCallback(async (status) => {
     try {
-      if (status == 'all') {
+      if (status === 'all') {
         await handleGetAllOrdersById();
       } else {
         const response = await orderApi.filterOrderByStatus(status);

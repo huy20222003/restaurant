@@ -43,8 +43,8 @@ class UserController {
   }
 
   async createUser(req, res) {
-    const { fullName, username, email } = req.body;
-    if (!username || !fullName || !email) {
+    const { fullName, username, email, phoneNumber } = req.body;
+    if (!username || !fullName || !email || !phoneNumber) {
       return res.status(400).json({
         success: false,
         message: 'Please provide all required information.',
@@ -52,12 +52,12 @@ class UserController {
     }
     try {
       const existingUser = await Users.findOne({
-        $or: [{ username }, { email }],
+        $or: [{ username }, { email }, { phoneNumber }],
       });
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: 'Username or email already exists!',
+          message: 'Username or email or Phone Number already exists!',
         });
       } else {
         const userRole = await Roles.findOne({ name: 'user' });
@@ -65,10 +65,13 @@ class UserController {
           fullName,
           username,
           email,
+          phoneNumber,
           roles: userRole._id,
         });
 
         await newUser.save();
+        const newCart = new Carts({ userCart: newUser._id });
+        await newCart.save();
 
         return res.status(200).json({
           success: true,

@@ -120,6 +120,7 @@ const CustomerManage = () => {
       fullName: '',
       username: '',
       email: '',
+      phoneNumber: '',
     },
     validationSchema: yup.object({
       fullName: yup
@@ -131,6 +132,7 @@ const CustomerManage = () => {
         .required('Username is required')
         .max(100, 'Maximum characters are 100'),
       email: yup.string().required('Email is required').email(),
+      phoneNumber: yup.string().required('Phone Number is required'),
     }),
     onSubmit: async (values) => {
       try {
@@ -334,6 +336,7 @@ const CustomerManage = () => {
     { name: 'fullName', label: 'FullName', type: 'text' },
     { name: 'username', label: 'Username', type: 'text' },
     { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phoneNumber', label: 'Phone Number', type: 'text' },
   ];
 
   const handleView = (userId) => {

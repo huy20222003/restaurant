@@ -75,7 +75,7 @@ const ReviewSumary = ({ productId }) => {
     <Paper elevation={2} sx={{ my: '2rem', p: '2rem 1rem' }}>
       <Stack
         sx={{
-          flexDirection: 'row',
+          flexDirection: { xs: 'column', sm: 'column', md: 'row', lg: 'row' },
           alignItems: 'center',
           justifyContent: 'center',
           gap: '4rem',
@@ -97,7 +97,7 @@ const ReviewSumary = ({ productId }) => {
             </Typography>
           </Box>
         </Stack>
-        <Stack sx={{ gap: '0.5rem', width: '40%' }}>
+        <Stack sx={{ gap: '0.5rem', width: {xs: '100%', sm: '100%', md: '40%', lg: '40%'} }}>
           <Stack sx={{ gap: '0.5rem' }}>
             <Stack
               sx={{

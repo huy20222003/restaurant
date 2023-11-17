@@ -48,7 +48,7 @@ const LoginForm = () => {
           Swal.fire('Failed', 'Login Failed', 'error');
         } else {
           const expiration = new Date();
-          expiration.setTime(expiration.getTime() + 15 * 60 * 1000);
+          expiration.setTime(expiration.getTime() + 60 * 60 * 1000);
           Cookies.set('user', loginData.accessToken, { expires: expiration });
           Cookies.set('refresh', loginData.refreshToken, { expires: 365 });
           await loadUser();

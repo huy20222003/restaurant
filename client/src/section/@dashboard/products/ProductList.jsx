@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 // @mui
-import { Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import ShopProductCard from './ProductCard';
 
 // ----------------------------------------------------------------------
@@ -12,11 +12,25 @@ ProductList.propTypes = {
 export default function ProductList({ products, ...other }) {
   return (
     <Grid container spacing={3} {...other}>
-      {products.map((product) => (
-        <Grid key={product._id} item xs={12} sm={6} md={3}>
-          <ShopProductCard product={product} />
-        </Grid>
-      ))}
+      {products.length > 0 ? (
+        products.map((product) => (
+          <Grid key={product._id} item xs={12} sm={6} md={3}>
+            <ShopProductCard product={product} />
+          </Grid>
+        ))
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100vw',
+            height: '20rem',
+          }}
+        >
+          <Typography variant="body1">Product not found!</Typography>
+        </Box>
+      )}
     </Grid>
   );
 }

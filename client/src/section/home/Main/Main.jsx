@@ -11,6 +11,9 @@ import {
   Typography,
 } from '@mui/material';
 import { keyframes } from '@mui/system';
+//context
+import { useAuth } from '../../../hooks/context';
+//---------------------------------------------
 
 const slide = keyframes`
   from {
@@ -20,7 +23,6 @@ const slide = keyframes`
     transform: scaleX(1);
   }
 `;
-
 
 const forwardToRight = keyframes`
   0% {
@@ -64,6 +66,7 @@ const StyledButtonBaseBuy = styled(ButtonBase)`
 
 const Main = () => {
   const [animationStarted, setAnimationStarted] = useState(false);
+  const {authState: {isAuthenticated}} = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -134,7 +137,7 @@ const Main = () => {
                   paddingBottom: '130px',
                   alignItems: { md: 'flex-start' },
                   textAlign: { md: 'left' },
-                  animation: `${forwardToLeft} 0.6s linear`
+                  animation: `${forwardToLeft} 0.6s linear`,
                 }}
               >
                 <Typography variant="h2">
@@ -146,7 +149,7 @@ const Main = () => {
                 </Typography>
                 <StyledButtonBaseBuy>
                   <Link
-                    href="/auth/login"
+                    href={isAuthenticated ? "/dashboard/products" : "/auth/login"}
                     style={{ color: '#fff', textDecoration: 'none' }}
                   >
                     Buy Now
@@ -160,7 +163,7 @@ const Main = () => {
                   bottom: '20%',
                   right: '-110px',
                   width: 'calc(100% - 436.663px)',
-                  animation: `${forwardToRight} 0.6s linear`
+                  animation: `${forwardToRight} 0.6s linear`,
                 }}
               >
                 <Box
@@ -193,7 +196,7 @@ const Main = () => {
                         height: '40rem',
                         objectFit: 'cover',
                         verticalAlign: 'bottom',
-                        borderRadius: '4px'
+                        borderRadius: '4px',
                       }}
                     ></Box>
                   </Box>

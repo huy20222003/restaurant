@@ -70,7 +70,7 @@ export default function LoginForm() {
             Swal.fire('Failed', 'Please check the information again!', 'error');
           } else {
             const expiration = new Date();
-            expiration.setTime(expiration.getTime() + 15 * 60 * 1000);
+            expiration.setTime(expiration.getTime() + 60 * 60 * 1000);
             Cookies.set('user', registerData.accessToken, {
               expires: expiration,
             });

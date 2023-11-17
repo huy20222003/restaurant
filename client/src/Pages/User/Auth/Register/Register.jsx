@@ -67,6 +67,7 @@ const Register = () => {
         username: data.user.uid,
         email: data.user.email,
         avatar: data.user.photoURL,
+        phoneNumber: data.metadata.createdAt,
         password: '1234567'
       });
       try {

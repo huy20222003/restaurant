@@ -61,66 +61,18 @@ const PaymentStatus = () => {
     }
   }, [handleGetOneOrder, payment]);
 
-  var count = 500;
+  var count = 200;
   var defaults = {
-    scalar: 2,
-    spread: 180,
-    particleCount: 30,
-    origin: { y: 0.6 },
-    //startVelocity: -45,
+    origin: { y: 0.7 },
   };
-
-  var tree = confetti.shapeFromPath({
-    path: 'M120 240c-41,14 -91,18 -120,1 29,-10 57,-22 81,-40 -18,2 -37,3 -55,-3 25,-14 48,-30 66,-51 -11,5 -26,8 -45,7 20,-14 40,-30 57,-49 -13,1 -26,2 -38,-1 18,-11 35,-25 51,-43 -13,3 -24,5 -35,6 21,-19 40,-41 53,-67 14,26 32,48 54,67 -11,-1 -23,-3 -35,-6 15,18 32,32 51,43 -13,3 -26,2 -38,1 17,19 36,35 56,49 -19,1 -33,-2 -45,-7 19,21 42,37 67,51 -19,6 -37,5 -56,3 25,18 53,30 82,40 -30,17 -79,13 -120,-1l0 41 -31 0 0 -41z',
-    matrix: [
-      0.03597122302158273, 0, 0, 0.03597122302158273, -4.856115107913669,
-      -5.071942446043165,
-    ],
-  });
 
   function fire(particleRatio, opts) {
     confetti({
       ...defaults,
       ...opts,
-      shapes: [tree],
-      colors: ['#8d960f', '#be0f10', '#445404'],
       particleCount: Math.floor(count * particleRatio),
     });
   }
-
-  var duration = 15 * 1000;
-  var animationEnd = Date.now() + duration;
-  var skew = 1;
-
-  function randomInRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  (function frame() {
-    var timeLeft = animationEnd - Date.now();
-    var ticks = Math.max(200, 500 * (timeLeft / duration));
-    skew = Math.max(0.8, skew - 0.001);
-
-    confetti({
-      particleCount: 1,
-      startVelocity: 0,
-      ticks: ticks,
-      origin: {
-        x: Math.random(),
-        // since particles fall down, skew start toward the top
-        y: Math.random() * skew - 0.2,
-      },
-      colors: ['#ffffff'],
-      shapes: ['circle'],
-      gravity: randomInRange(0.4, 0.6),
-      scalar: randomInRange(0.4, 1),
-      drift: randomInRange(-0.4, 0.4),
-    });
-
-    if (timeLeft > 0) {
-      requestAnimationFrame(frame);
-    }
-  })();
 
   if (
     payment?.payment?.status === 'success' ||

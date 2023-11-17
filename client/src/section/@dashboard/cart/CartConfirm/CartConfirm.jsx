@@ -45,7 +45,6 @@ const CartConfirm = ({ orderData }) => {
   };
 
   orderData.items.forEach((item) => (item.isReview = false));
-  console.log(orderData);
 
   const handleCreate = async () => {
     switch (orderData.paymentMethod) {
@@ -120,7 +119,7 @@ const CartConfirm = ({ orderData }) => {
       <Paper
         elevation={3}
         component={Card}
-        sx={{ width: '40rem', margin: '0 auto' }}
+        sx={{ maxWidth: '40rem', margin: '0 auto' }}
       >
         <Typography variant="h5" sx={{ p: '1rem', textAlign: 'center' }}>
           Order Confirm
@@ -140,7 +139,8 @@ const CartConfirm = ({ orderData }) => {
           >
             <Typography variant="body1">FullName</Typography>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {orderData?.fullName}
+              {orderData?.fullName.substring(0, 150)}
+              {orderData?.fullName.length > 150 && '...'}
             </Typography>
           </Stack>
           <Stack
@@ -168,7 +168,8 @@ const CartConfirm = ({ orderData }) => {
           >
             <Typography variant="body1">Address</Typography>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {orderData?.shipAddress}
+              {orderData?.shipAddress.substring(0, 150)}
+              {orderData?.shipAddress.length > 150 && '...'}
             </Typography>
           </Stack>
           <Stack

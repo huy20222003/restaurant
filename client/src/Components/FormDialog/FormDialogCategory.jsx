@@ -16,6 +16,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useCommon } from '../../hooks/context';
 import { useDropzone } from 'react-dropzone';
 
+//-----------------------------------------------------------
+
 const CategoryFormImageItem = ({ imageUrl, handleDeleteImage }) => {
   return (
     <Stack
