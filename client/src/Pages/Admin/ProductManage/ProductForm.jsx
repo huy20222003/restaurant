@@ -21,6 +21,7 @@ import {
   ProductFormProperty,
   ProductFormPrice,
 } from '../../../section/admin/product';
+import { ButtonBack } from '../../../section/@dashboard/common';
 //sweetalert
 import Swal from 'sweetalert2';
 //yup
@@ -88,9 +89,12 @@ const ProductForm = () => {
       size: yup.string().nullable(),
       color: yup.string().nullable(),
       price: yup.number().required('Price is required'),
-      priceSale: yup.number().nullable().when('price', (price, schema) => {
-        return schema.lessThan(price, 'Price Sale must be less than Price');
-      }),
+      priceSale: yup
+        .number()
+        .nullable()
+        .when('price', (price, schema) => {
+          return schema.lessThan(price, 'Price Sale must be less than Price');
+        }),
       status: yup.string().required('Status is required'),
     }),
     onSubmit: async (values) => {
@@ -136,6 +140,7 @@ const ProductForm = () => {
 
   return (
     <form style={{ marginTop: '2rem' }} onSubmit={formik.handleSubmit}>
+      <ButtonBack />
       <Grid container spacing={2}>
         <Grid item md={4}>
           <Typography variant="h6">

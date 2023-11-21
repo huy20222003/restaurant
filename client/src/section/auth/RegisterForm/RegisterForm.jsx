@@ -1,7 +1,13 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import { Stack, IconButton, InputAdornment, TextField } from '@mui/material';
+import {
+  Stack,
+  IconButton,
+  InputAdornment,
+  TextField,
+  CircularProgress,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
@@ -23,6 +29,7 @@ export default function LoginForm() {
   const navigate = useNavigate();
   document.title = 'Đăng ký tài khoản';
   const { registerUser } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -46,7 +53,9 @@ export default function LoginForm() {
         .string()
         .required('Email is required')
         .matches(/^\S+@\S+\.\S+$/, 'Invalid email'),
-      phoneNumber: yup.string().max(10, 'Maximum phone number is 10 characters'),
+      phoneNumber: yup
+        .string()
+        .max(10, 'Maximum phone number is 10 characters'),
       password: yup
         .string()
         .required('Password is required')
@@ -65,9 +74,11 @@ export default function LoginForm() {
         Swal.fire('Error', 'Password do not match!', 'error');
       } else {
         try {
+          setLoading(true);
           const registerData = await registerUser(values);
           if (!registerData.success) {
             Swal.fire('Failed', 'Please check the information again!', 'error');
+            setLoading(false);
           } else {
             const expiration = new Date();
             expiration.setTime(expiration.getTime() + 60 * 60 * 1000);
@@ -126,6 +137,16 @@ export default function LoginForm() {
               </InputAdornment>
             ),
           }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              if (document.getElementById('fullName').value === '') {
+                return;
+              } else {
+                document.getElementById('username').focus();
+              }
+            }
+          }}
         />
         <TextField
           margin="normal"
@@ -144,6 +165,16 @@ export default function LoginForm() {
                 <AccountCircle />
               </InputAdornment>
             ),
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              if (document.getElementById('username').value === '') {
+                return;
+              } else {
+                document.getElementById('email').focus();
+              }
+            }
           }}
         />
         <TextField
@@ -164,6 +195,16 @@ export default function LoginForm() {
               </InputAdornment>
             ),
           }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              if (document.getElementById('email').value === '') {
+                return;
+              } else {
+                document.getElementById('phoneNumber').focus();
+              }
+            }
+          }}
         />
         <TextField
           margin="normal"
@@ -182,6 +223,16 @@ export default function LoginForm() {
                 <EmailIcon />
               </InputAdornment>
             ),
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              if (document.getElementById('phoneNumber').value === '') {
+                return;
+              } else {
+                document.getElementById('password').focus();
+              }
+            }
           }}
         />
 
@@ -213,6 +264,16 @@ export default function LoginForm() {
                 </IconButton>
               </InputAdornment>
             ),
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              if (document.getElementById('password').value === '') {
+                return;
+              } else {
+                document.getElementById('confirmPassword').focus();
+              }
+            }
           }}
         />
         <TextField
@@ -248,6 +309,11 @@ export default function LoginForm() {
               </InputAdornment>
             ),
           }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              formik.handleSubmit();
+            }
+          }}
         />
       </Stack>
 
@@ -258,15 +324,29 @@ export default function LoginForm() {
         sx={{ my: 2 }}
       ></Stack>
 
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        onClick={handleCheck}
-      >
-        Signup
-      </LoadingButton>
+      {loading ? (
+        <Stack
+          sx={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <CircularProgress size={30} />
+        </Stack>
+      ) : (
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          variant="contained"
+          loadingPosition="start"
+          loadingIndicator={<CircularProgress size={16} />}
+          onClick={handleCheck}
+        >
+          SignUp
+        </LoadingButton>
+      )}
     </>
   );
 }

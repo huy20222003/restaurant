@@ -23,7 +23,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 //context
-import { useProduct, useCategory } from '../../../hooks/context';
+import { useProduct, useCategory, useCommon } from '../../../hooks/context';
 //component
 import Iconify from '../../../Components/User/iconify';
 //sweetalert
@@ -35,6 +35,8 @@ import { fDateTime } from '../../../utils/formatTime';
 //pdf
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+//component
+import FormDialogViewProduct from '../../../Components/FormDialog/FormDialogViewProduct';
 //---------------------------------------------------------
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -48,7 +50,11 @@ const ProductManage = () => {
     productsState: { products },
     handleDeleteProduct,
     handleGetAllProducts,
+    handleGetOneProduct,
   } = useProduct();
+
+  const {setOpenFormDialog} = useCommon();
+  const [product, setProduct] = useState({});
 
   const {
     categoryState: { categories },
@@ -206,8 +212,14 @@ const ProductManage = () => {
     };
   });
 
-  const handleView = (productId) => {
-    console.log(`View product with ID: ${productId}`);
+  const handleView = async (productId) => {
+    try {
+      const response = await handleGetOneProduct(productId);
+      setProduct(response.product);
+      setOpenFormDialog(true);
+    } catch (error) {
+      console.error('Error fetching order:', error);
+    }
   };
 
   const handleEdit = (productId) => {
@@ -303,6 +315,7 @@ const ProductManage = () => {
           </Box>
         </Box>
       </Box>
+      <FormDialogViewProduct product={product} handleDelete={handleDelete} />
     </StyledPaper>
   );
 };

@@ -78,10 +78,21 @@ const ProfileCardInfo = () => {
                   required
                   name="fullName"
                   label="Fullname"
+                  id="fullName"
                   {...formik.getFieldProps('fullName')}
                   error={!!(formik.touched.fullName && formik.errors.fullName)}
                   helperText={formik.touched.fullName && formik.errors.fullName}
                   fullWidth
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      if (document.getElementById('fullName').value === '') {
+                        return;
+                      } else {
+                        document.getElementById('username').focus();
+                      }
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
@@ -89,10 +100,21 @@ const ProfileCardInfo = () => {
                   required
                   name="username"
                   label="Username"
+                  id="username"
                   {...formik.getFieldProps('username')}
                   error={!!(formik.touched.username && formik.errors.username)}
                   helperText={formik.touched.username && formik.errors.username}
                   fullWidth
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      if (document.getElementById('username').value === '') {
+                        return;
+                      } else {
+                        document.getElementById('email').focus();
+                      }
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
@@ -100,10 +122,21 @@ const ProfileCardInfo = () => {
                   required
                   name="email"
                   label="Email"
+                  id="email"
                   {...formik.getFieldProps('email')}
                   error={!!(formik.touched.email && formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
                   fullWidth
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      if (document.getElementById('email').value === '') {
+                        return;
+                      } else {
+                        document.getElementById('phoneNumber').focus();
+                      }
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
@@ -111,6 +144,7 @@ const ProfileCardInfo = () => {
                   required
                   name="phoneNumber"
                   label="Phone Number"
+                  id="phoneNumber"
                   {...formik.getFieldProps('phoneNumber')}
                   error={
                     !!(formik.touched.phoneNumber && formik.errors.phoneNumber)
@@ -119,6 +153,16 @@ const ProfileCardInfo = () => {
                     formik.touched.phoneNumber && formik.errors.phoneNumber
                   }
                   fullWidth
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      if (document.getElementById('phoneNumber').value === '') {
+                        return;
+                      } else {
+                        document.getElementById('shipAddress').focus();
+                      }
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
@@ -126,6 +170,7 @@ const ProfileCardInfo = () => {
                   required
                   name="shipAddress"
                   label="Ship Address"
+                  id="shipAddress"
                   {...formik.getFieldProps('shipAddress')}
                   error={
                     !!(formik.touched.shipAddress && formik.errors.shipAddress)
@@ -134,6 +179,16 @@ const ProfileCardInfo = () => {
                     formik.touched.shipAddress && formik.errors.shipAddress
                   }
                   fullWidth
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      if (document.getElementById('shipAddress').value === '') {
+                        return;
+                      } else {
+                        document.getElementById('address').focus();
+                      }
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
@@ -141,6 +196,7 @@ const ProfileCardInfo = () => {
                   required
                   name="address"
                   label="Address"
+                  id="address"
                   {...formik.getFieldProps('address')}
                   error={!!(formik.touched.address && formik.errors.address)}
                   helperText={formik.touched.address && formik.errors.address}

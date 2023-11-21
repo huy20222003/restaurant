@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 //@mui
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography, useMediaQuery, useTheme } from '@mui/material';
 //context
 import { usePayment, useOrder, useProduct } from '../../../hooks/context';
 //component
@@ -23,6 +23,9 @@ const PaymentStatus = () => {
     productsState: { products },
     handleGetAllProducts,
   } = useProduct();
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     handleGetAllProducts();
@@ -50,7 +53,7 @@ const PaymentStatus = () => {
       const fetchOrder = async () => {
         try {
           const orderData = await handleGetOneOrder(orderId);
-          setOrder(orderData);
+          setOrder(orderData.order);
         } catch (error) {
           console.error('Error fetching order:', error);
           // Handle error as needed
@@ -102,8 +105,8 @@ const PaymentStatus = () => {
     });
   }
 
-  const productsFilter = products.filter((product) => {
-    return product.name.includes('Milk');
+  const productsFilter = products?.filter((product) => {
+    return order?.items.some(orderProduct => orderProduct.product.name.includes(product.name));
   });
 
   return (
@@ -147,9 +150,10 @@ const PaymentStatus = () => {
               : 'An error has occurred'}
           </Typography>
           <Button
-            size="medium"
+            size={isSmallScreen ? 'small' : 'medium'}
             variant="contained"
-            sx={{ width: '40%', my: '1rem' }}
+            fullWidth
+            sx={{ width: '40%', my: '1rem', fontSize: {xs: '0.75rem', sm: '0.75rem'} }}
             onClick={() => navigate('/dashboard/products')}
           >
             Continue Shopping

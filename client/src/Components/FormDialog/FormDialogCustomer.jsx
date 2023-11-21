@@ -46,6 +46,21 @@ const FormDialogCustomer = ({ fields, formik, handleCreate }) => {
                   formik.touched[field.name] && formik.errors[field.name]
                 }
                 required
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    if (document.getElementById(field.name).value === '') {
+                      return;
+                    } else {
+                      if (index < fields.length - 1) {
+                        const nextField = fields[index + 1].name;
+                        document.getElementById(nextField).focus();
+                      } else {
+                        handleCreate();
+                      }
+                    }
+                  }
+                }}
               />
             );
           })}

@@ -14,6 +14,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { keyframes } from '@mui/system';
 //context
 import { useAuth } from '../../../../hooks/context';
+//component
+import Logo from '../../../../Components/User/logo';
 //----------------------------------------------------------------------
 
 const StyledButton = styled(Button)`
@@ -75,116 +77,166 @@ const StyledButtonBaseBuy = styled(ButtonBase)`
   }
 `;
 
+const StyledSpan = styled('span')(() => ({
+  minWidth: '24px',
+  lineHeight: 0,
+  borderRadius: '6px',
+  alignItems: 'center',
+  whiteSpace: 'nowrap',
+  display: 'inline-flex',
+  justifyContent: 'center',
+  textTransform: 'capitalize',
+  padding: '0px 4px',
+  fontWeight: 700,
+  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+  color: 'rgb(0, 108, 156)',
+  backgroundColor: 'rgba(0, 184, 217, 0.16)',
+  marginLeft: '4px',
+  top: '10px',
+  left: '60px',
+  height: '20px',
+  fontSize: '11px',
+  cursor: 'pointer',
+  position: 'absolute',
+}));
+
 const Nav = () => {
   const {
     authState: { isAuthenticated },
   } = useAuth();
   return (
-    <Stack
-      sx={{
-        flexDirection: { xs: 'column', sm: 'column', md: 'row', lg: 'row' },
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <Stack
-        component="nav"
+    <>
+      <Box
         sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'column', md: 'row', lg: 'row' },
-          gap: '40px',
-          height: '100%',
+          lineHeight: 0,
+          position: 'relative',
+          display: {xs: 'flex', sm: 'none', md: 'none', lg: 'none'},
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
-        <Typography component={Link} href="/" sx={{ textDecoration: 'none' }}>
-          <StyledButton>Home</StyledButton>
+        <Typography sx={{ lineHeight: 0, m: 0 }} component={Link} href="/">
+          <Logo
+            sx={{
+              width: { xs: '1rem', sm: '1rem', md: '2rem', lg: '2rem' },
+              height: { xs: '1rem', sm: '1rem', md: '2rem', lg: '2rem' },
+            }}
+          />
         </Typography>
-        <Typography
-          component={Link}
-          href="/about"
-          sx={{ textDecoration: 'none' }}
-        >
-          <StyledButton>About us</StyledButton>
+        <Typography sx={{ lineHeight: 0, m: 0 }} component={Link} href="/">
+          <StyledSpan>v1.1</StyledSpan>
         </Typography>
-        <Typography
-          component={Link}
-          href="/dashboard/products"
-          sx={{ textDecoration: 'none' }}
-        >
-          <StyledButton>Products</StyledButton>
-        </Typography>
-        <Typography component={Link} href="faq" sx={{ textDecoration: 'none' }}>
-          <StyledButton>FAQs</StyledButton>
-        </Typography>
-        <Typography component={Link} href="/" sx={{ textDecoration: 'none' }}>
-          <StyledButton>Contact us</StyledButton>
-        </Typography>
-      </Stack>
+      </Box>
       <Stack
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          gap: '16px',
+          flexDirection: { xs: 'column', sm: 'row', md: 'row', lg: 'row' },
+          justifyContent: 'space-between',
           alignItems: 'center',
-          justifyContent: 'flex-end',
+          marginTop: { xs: '1rem', sm: '1rem' },
         }}
       >
         <Stack
+          component="nav"
           sx={{
             display: 'flex',
-            flexDirection: 'row',
-            gap: '8px',
-            alignItems: 'center',
+            flexDirection: { xs: 'column', sm: 'row', md: 'row', lg: 'row' },
+            gap: '40px',
+            height: '100%',
           }}
         >
-          <ButtonBase
+          <Typography component={Link} href="/" sx={{ textDecoration: 'none' }}>
+            <StyledButton>Home</StyledButton>
+          </Typography>
+          <Typography
+            component={Link}
+            href="/about"
+            sx={{ textDecoration: 'none' }}
+          >
+            <StyledButton>About us</StyledButton>
+          </Typography>
+          <Typography
+            component={Link}
+            href="/dashboard/products"
+            sx={{ textDecoration: 'none' }}
+          >
+            <StyledButton>Products</StyledButton>
+          </Typography>
+          <Typography
+            component={Link}
+            href="faq"
+            sx={{ textDecoration: 'none' }}
+          >
+            <StyledButton>FAQs</StyledButton>
+          </Typography>
+          <Typography component={Link} href="/" sx={{ textDecoration: 'none' }}>
+            <StyledButton>Contact us</StyledButton>
+          </Typography>
+        </Stack>
+        <Stack
+          sx={{
+            flexDirection: 'row',
+            gap: '16px',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            marginTop: { xs: '2rem', sm: 0, md: 0, lg: 0 },
+          }}
+        >
+          <Stack
             sx={{
-              fontSize: '1.5rem',
-              padding: '8px',
-              borderRadius: '50%',
-              overflow: 'visible',
-              transition:
-                'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+              flexDirection: 'row',
+              gap: '8px',
+              alignItems: 'center',
             }}
           >
-            <ManageSearchIcon />
-          </ButtonBase>
-          <Badge
-            component="span"
-            sx={{
-              position: 'relative',
-              display: 'inline-flex',
-              verticalAlign: 'middle',
-              flexShrink: 0,
-            }}
-          >
-            <Box>
-              <ButtonBase
-                sx={{
-                  fontSize: '1.5rem',
-                  padding: '8px',
-                  borderRadius: '50%',
-                  overflow: 'visible',
-                  transition:
-                    'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-                  animation: `${spin} 5s linear infinite`,
-                }}
-              >
-                <SettingsIcon />
-              </ButtonBase>
-            </Box>
-          </Badge>
-          <StyledButtonBaseBuy>
-            <Link
-              href={isAuthenticated ? '/dashboard/products' : '/auth/login'}
-              style={{ color: '#fff', textDecoration: 'none' }}
+            <ButtonBase
+              sx={{
+                fontSize: '1.5rem',
+                padding: '8px',
+                borderRadius: '50%',
+                overflow: 'visible',
+                transition:
+                  'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+              }}
             >
-              Buy Now
-            </Link>
-          </StyledButtonBaseBuy>
+              <ManageSearchIcon />
+            </ButtonBase>
+            <Badge
+              component="span"
+              sx={{
+                position: 'relative',
+                display: 'inline-flex',
+                verticalAlign: 'middle',
+                flexShrink: 0,
+              }}
+            >
+              <Box>
+                <ButtonBase
+                  sx={{
+                    fontSize: '1.5rem',
+                    padding: '8px',
+                    borderRadius: '50%',
+                    overflow: 'visible',
+                    transition:
+                      'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+                    animation: `${spin} 5s linear infinite`,
+                  }}
+                >
+                  <SettingsIcon />
+                </ButtonBase>
+              </Box>
+            </Badge>
+            <StyledButtonBaseBuy>
+              <Link
+                href={isAuthenticated ? '/dashboard/products' : '/auth/login'}
+                style={{ color: '#fff', textDecoration: 'none' }}
+              >
+                Buy Now
+              </Link>
+            </StyledButtonBaseBuy>
+          </Stack>
         </Stack>
       </Stack>
-    </Stack>
+    </>
   );
 };
 

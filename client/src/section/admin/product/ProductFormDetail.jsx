@@ -13,17 +13,29 @@ const ProductFormDetail = ({ formik }) => {
           required
           name="name"
           label="Product Name"
+          id='name'
           fullWidth
           value={values.name}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           error={!!(formik.touched.name && formik.errors.name)}
           helperText={formik.touched.name && formik.errors.name}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              if (document.getElementById('name').value === '') {
+                return;
+              } else {
+                document.getElementById('subDescription').focus();
+              }
+            }
+          }}
         />
         <TextField
           required
           name="subDescription"
           label="Sub Description"
+          id='subDescription'
           fullWidth
           multiline
           rows={4}

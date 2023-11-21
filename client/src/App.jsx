@@ -8,6 +8,8 @@ import ThemeProviders from './theme/ThemeProviders';
 import ScrollToTop from './Components/User/scroll-to-top';
 //ToastContainer
 import { ToastContainer } from 'react-toastify';
+//check Internet
+import { CheckInternet } from './Components/CheckInternet';
 //context
 import { AuthProvider } from './Contexts/AuthContext';
 import { ProductsProvider } from './Contexts/ProductsContext';
@@ -32,6 +34,7 @@ export default function App() {
         <ScrollToTop />
         <ThemeProviders>
           <ToastContainer />
+          <CheckInternet />
           <AuthProvider>
             <ProductsProvider>
               <CommonProvider>

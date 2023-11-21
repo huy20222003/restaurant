@@ -72,6 +72,7 @@ const ProductFormProperty = ({ formik }) => {
               <TextField
                 name="quantity"
                 label="Quantity"
+                id='quantity'
                 fullWidth
                 value={values.quantity}
                 onChange={handleChange}
@@ -104,6 +105,7 @@ const ProductFormProperty = ({ formik }) => {
               <TextField
                 name="size"
                 label="Sizes"
+                id='size'
                 fullWidth
                 multiline
                 rows={3}
@@ -112,12 +114,23 @@ const ProductFormProperty = ({ formik }) => {
                 onBlur={handleBlur}
                 error={!!(touched.size && errors.size)}
                 helperText={touched.size && errors.size}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    if (document.getElementById('size').value === '') {
+                      return;
+                    } else {
+                      document.getElementById('color').focus();
+                    }
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 name="color"
                 label="Colors"
+                id='color'
                 fullWidth
                 multiline
                 rows={3}

@@ -9,6 +9,7 @@ import {
   TextField,
   Checkbox,
   Box,
+  CircularProgress,
 } from '@mui/material';
 //mui icon
 import { LoadingButton } from '@mui/lab';
@@ -30,6 +31,7 @@ export default function LoginForm() {
   const navigate = useNavigate();
   document.title = 'Login';
   const { loginUser, loadUser } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -42,9 +44,11 @@ export default function LoginForm() {
     }),
     onSubmit: async (values) => {
       try {
+        setLoading(true);
         const loginData = await loginUser(values);
         if (!loginData.success) {
           Swal.fire('Failed', 'Login Failed', 'error');
+          setLoading(false);
         } else {
           const expiration = new Date();
           expiration.setTime(expiration.getTime() + 60 * 60 * 1000);
@@ -83,6 +87,16 @@ export default function LoginForm() {
               </InputAdornment>
             ),
           }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              if (document.getElementById('username').value === '') {
+                return;
+              } else {
+                document.getElementById('password').focus();
+              }
+            }
+          }}
         />
 
         <TextField
@@ -114,6 +128,11 @@ export default function LoginForm() {
               </InputAdornment>
             ),
           }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              formik.handleSubmit();
+            }
+          }}
         />
       </Stack>
 
@@ -132,15 +151,23 @@ export default function LoginForm() {
         </Link>
       </Stack>
 
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        onClick={formik.handleSubmit}
-      >
-        Login
-      </LoadingButton>
+      {loading ? (
+        <Stack sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+          <CircularProgress size={30} />
+        </Stack>
+      ) : (
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          variant="contained"
+          loadingPosition="start"
+          loadingIndicator={<CircularProgress size={16} />}
+          onClick={formik.handleSubmit}
+        >
+          Login
+        </LoadingButton>
+      )}
     </>
   );
 }

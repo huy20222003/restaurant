@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import Users from '../models/Users.mjs';
 import Roles from '../models/Roles.mjs';
 import Employees from '../models/Employees.mjs';
+import Carts from '../models/Carts.mjs';
 import bcryptjs from 'bcryptjs';
 
 dotenv.config();

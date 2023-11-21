@@ -182,6 +182,7 @@ const FormDialogCategory = ({ fields, formik, isEdit }) => {
             key={index}
             autoFocus={index === 0}
             margin="dense"
+            id={field.name}
             fullWidth
             {...field}
             value={formik.values[field.name] || ''}
@@ -190,6 +191,19 @@ const FormDialogCategory = ({ fields, formik, isEdit }) => {
             error={formik.touched[field.name] && formik.errors[field.name]}
             helperText={formik.touched[field.name] && formik.errors[field.name]}
             required
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                if (document.getElementById(field.name).value === '') {
+                  return;
+                } else {
+                  if (index < fields.length - 1) {
+                    const nextField = fields[index + 1].name;
+                    document.getElementById(nextField).focus();
+                  }
+                }
+              }
+            }}
           />
         ))}
 

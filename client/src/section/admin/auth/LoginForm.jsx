@@ -7,13 +7,14 @@ import * as yup from 'yup';
 //@mui
 import {
   Box,
-  Button,
   IconButton,
   InputAdornment,
   Stack,
   TextField,
   Typography,
+  CircularProgress,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
 //context
@@ -31,6 +32,7 @@ const LoginForm = () => {
   const { loginAdmin, loadUser } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -43,9 +45,11 @@ const LoginForm = () => {
     }),
     onSubmit: async (values) => {
       try {
+        setLoading(true);
         const loginData = await loginAdmin(values);
         if (!loginData.success) {
           Swal.fire('Failed', 'Login Failed', 'error');
+          setLoading(false);
         } else {
           const expiration = new Date();
           expiration.setTime(expiration.getTime() + 60 * 60 * 1000);
@@ -95,6 +99,7 @@ const LoginForm = () => {
                 helperText={formik.touched.username && formik.errors.username}
                 label="Username"
                 name="username"
+                id='username'
                 {...formik.getFieldProps('username')}
                 type="text"
                 InputProps={{
@@ -104,6 +109,16 @@ const LoginForm = () => {
                     </InputAdornment>
                   ),
                 }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    if (document.getElementById('username').value === '') {
+                      return;
+                    } else {
+                      document.getElementById('password').focus();
+                    }
+                  }
+                }}
               />
               <TextField
                 error={!!(formik.touched.password && formik.errors.password)}
@@ -111,6 +126,7 @@ const LoginForm = () => {
                 helperText={formik.touched.password && formik.errors.password}
                 label="Password"
                 name="password"
+                id='password'
                 type="password"
                 {...formik.getFieldProps('password')}
                 InputProps={{
@@ -134,18 +150,38 @@ const LoginForm = () => {
                     </InputAdornment>
                   ),
                 }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    formik.handleSubmit();
+                  }
+                }}
               />
             </Stack>
-            <Button
-              fullWidth
-              size="large"
-              sx={{ mt: 3 }}
-              type="submit"
-              variant="contained"
-              onClick={formik.handleSubmit}
-            >
-              Login
-            </Button>
+            {loading ? (
+              <Stack
+                sx={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mt: '2rem'
+                }}
+              >
+                <CircularProgress size={30} />
+              </Stack>
+            ) : (
+              <LoadingButton
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                loadingPosition="start"
+                loadingIndicator={<CircularProgress size={16} />}
+                onClick={formik.handleSubmit}
+                sx={{mt: '2rem'}}
+              >
+                Login
+              </LoadingButton>
+            )}
           </div>
         </Box>
       </Box>

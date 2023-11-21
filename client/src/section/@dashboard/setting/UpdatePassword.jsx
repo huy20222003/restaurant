@@ -48,22 +48,21 @@ const UpdatePassword = () => {
         .required('ConfirmPassword is required')
         .oneOf([yup.ref('newPassword')], 'Password do not match'),
     }),
-    onSubmit: async (values)=> {
+    onSubmit: async (values) => {
       try {
         const response = await handleUpdatePasswordUser(values);
-          if (!response.success) {
-            Swal.fire('Failed', 'Update password failed', 'error');
-          } else {
-            Swal.fire('Success', 'Update password success', 'success');
-          }
-       
+        if (!response.success) {
+          Swal.fire('Failed', 'Update password failed', 'error');
+        } else {
+          Swal.fire('Success', 'Update password success', 'success');
+        }
       } catch (error) {
         Swal.fire('Error', 'Server Error', 'error');
       }
     },
-    onReset: ()=> {
+    onReset: () => {
       formik.setValues('');
-    }
+    },
   });
 
   return (
@@ -93,10 +92,15 @@ const UpdatePassword = () => {
             <TextField
               name="newPassword"
               label="Password"
+              id="newPassword"
               fullWidth
               {...formik.getFieldProps('newPassword')}
-              error={!!(formik.touched.newPassword && formik.errors.newPassword)}
-              helperText={formik.touched.newPassword && formik.errors.newPassword}
+              error={
+                !!(formik.touched.newPassword && formik.errors.newPassword)
+              }
+              helperText={
+                formik.touched.newPassword && formik.errors.newPassword
+              }
               sx={{ maxWidth: { xs: '100%', sm: '100%', md: '50%' } }}
               type={showPassword ? 'text' : 'password'}
               InputProps={{
@@ -120,16 +124,35 @@ const UpdatePassword = () => {
                   </InputAdornment>
                 ),
               }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  if (document.getElementById('newPassword').value === '') {
+                    return;
+                  } else {
+                    document.getElementById('confirmNewPassword').focus();
+                  }
+                }
+              }}
             />
           </FormControl>
           <FormControl sx={{ my: '0.5rem' }}>
             <TextField
               name="confirmNewPassword"
               label="Password (Confirm)"
+              id='confirmNewPassword'
               fullWidth
               {...formik.getFieldProps('confirmNewPassword')}
-              error={!!(formik.touched.confirmNewPassword && formik.errors.confirmNewPassword)}
-              helperText={formik.touched.confirmNewPassword && formik.errors.confirmNewPassword}
+              error={
+                !!(
+                  formik.touched.confirmNewPassword &&
+                  formik.errors.confirmNewPassword
+                )
+              }
+              helperText={
+                formik.touched.confirmNewPassword &&
+                formik.errors.confirmNewPassword
+              }
               sx={{ maxWidth: { xs: '100%', sm: '100%', md: '50%' } }}
               type={showPassword ? 'text' : 'password'}
               InputProps={{
@@ -152,6 +175,11 @@ const UpdatePassword = () => {
                     </IconButton>
                   </InputAdornment>
                 ),
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  formik.handleSubmit();
+                }
               }}
             />
           </FormControl>
@@ -170,7 +198,7 @@ const UpdatePassword = () => {
             color="primary"
             variant="contained"
             sx={{ p: '0.5rem 1.25rem' }}
-            type='submit'
+            type="submit"
             onClick={formik.handleSubmit}
           >
             Save

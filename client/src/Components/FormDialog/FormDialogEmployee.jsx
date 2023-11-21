@@ -37,6 +37,7 @@ const FormDialogEmployee = ({ fields, formik, handleSave, isEdit }) => {
                 autoFocus={index === 0}
                 margin="dense"
                 {...field}
+                id={field.name}
                 fullWidth
                 value={formik.values[field.name] || ''}
                 onChange={formik.handleChange}
@@ -46,6 +47,19 @@ const FormDialogEmployee = ({ fields, formik, handleSave, isEdit }) => {
                   formik.touched[field.name] && formik.errors[field.name]
                 }
                 required
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    if (document.getElementById(field.name).value === '') {
+                      return;
+                    } else {
+                      if (index < fields.length - 1) {
+                        const nextField = fields[index + 1].name;
+                        document.getElementById(nextField).focus();
+                      }
+                    }
+                  }
+                }}
               />
             );
           })}

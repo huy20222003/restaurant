@@ -106,7 +106,7 @@ Users.statics.uploadFileToCloudinary = async function (file) {
 
 Users.methods.generateAccessToken = function () {
   return jwt.sign({ _id: this._id, roles: this.roles }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: '15m',
+    expiresIn: '60m',
   });
 };
 

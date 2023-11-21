@@ -8,6 +8,9 @@ import {
   Box,
   Typography,
   Link,
+  Drawer as MuiDrawer,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 //component
 import Logo from '../../../Components/User/logo';
@@ -16,6 +19,8 @@ import Nav from './nav';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 //-------------------------------------------------------
+
+const drawerWidth = 240;
 
 const StyledPaper = styled(Paper)`
   && {
@@ -28,7 +33,7 @@ const StyledPaper = styled(Paper)`
     box-sizing: border-box;
     flex-shrink: 0;
     position: fixed;
-    z-index: 1100;
+    z-index: 1;
     top: 0px;
     left: auto;
     right: 0px;
@@ -53,7 +58,7 @@ const StyledToolbar = styled(Toolbar)`
 
 const StyledContainer = styled(Container)`
   && {
-    width: 100vư;
+    width: 100vw;
     margin-left: auto;
     box-sizing: border-box;
     margin-right: auto;
@@ -89,43 +94,90 @@ const StyledSpan = styled('span')(() => ({
   position: 'absolute',
 }));
 
+const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
+  '& .MuiDrawer-paper': {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: open ? drawerWidth : 0,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: 'border-box',
+    overflowX: 'hidden',
+    ...(!open && {
+      width: 0,
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    }),
+    [theme.breakpoints.up('sm')]: {
+      width: open ? theme.spacing(9) : 0,
+    },
+  },
+}));
+
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
   return (
-    <StyledPaper elevation={4} component="header">
-      <StyledToolbar>
-        <StyledContainer>
-          <Box sx={{ lineHeight: 0, position: 'relative' }}>
-            <Typography sx={{ lineHeight: 0, m: 0 }} component={Link} href="/">
-              <Logo
-                sx={{
-                  width: { xs: '1rem', sm: '1rem', md: '2rem', lg: '2rem' },
-                  height: { xs: '1rem', sm: '1rem', md: '2rem', lg: '2rem' },
-                }}
-              />
-            </Typography>
-            <Typography sx={{ lineHeight: 0, m: 0 }} component={Link} href="/">
-              <StyledSpan>v1.0</StyledSpan>
-            </Typography>
-          </Box>
-          <Box sx={{ mt: '2rem' }}>
-              <Nav />
+    <>
+      <StyledPaper elevation={4} component="header">
+        <StyledToolbar>
+          <StyledContainer>
+            <Box sx={{ lineHeight: 0, position: 'relative' }}>
+              <Typography
+                sx={{ lineHeight: 0, m: 0 }}
+                component={Link}
+                href="/"
+              >
+                <Logo
+                  sx={{
+                    width: { xs: '1rem', sm: '1rem', md: '2rem', lg: '2rem' },
+                    height: { xs: '1rem', sm: '1rem', md: '2rem', lg: '2rem' },
+                  }}
+                />
+              </Typography>
+              <Typography
+                sx={{ lineHeight: 0, m: 0 }}
+                component={Link}
+                href="/"
+              >
+                <StyledSpan>v1.1</StyledSpan>
+              </Typography>
             </Box>
-          <Box
-            sx={{
-              display: { xs: 'block', sm: 'block', md: 'none', lg: 'none' },
-            }}
-          >
-            {open ? <CloseIcon onClick={toggleDrawer} /> : <MenuIcon onClick={toggleDrawer} />}
-          </Box>
-        </StyledContainer>
-      </StyledToolbar>
-    </StyledPaper>
+            <Box
+              sx={{
+                display: { xs: 'block', sm: 'none', md: 'none', lg: 'none' },
+                cursor: 'pointer'
+              }}
+            >
+              {open ? (
+                <CloseIcon onClick={toggleDrawer} />
+              ) : (
+                <MenuIcon onClick={toggleDrawer} />
+              )}
+            </Box>
+            {isSmallScreen ? (
+              <Drawer anchor="left" open={open} onClose={toggleDrawer}>
+                <Nav />
+              </Drawer>
+            ) : (
+              <Box>
+                <Nav />
+              </Box>
+            )}
+          </StyledContainer>
+        </StyledToolbar>
+      </StyledPaper>
+    </>
   );
 };
 

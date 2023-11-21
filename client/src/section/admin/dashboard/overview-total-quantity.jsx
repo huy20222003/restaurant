@@ -21,7 +21,7 @@ const OverviewTotalQuantity = (props) => {
               color="text.secondary"
               variant="overline"
             >
-              Total quantity sold
+              Quantity sold
             </Typography>
             <Typography variant="h5">
               {value}

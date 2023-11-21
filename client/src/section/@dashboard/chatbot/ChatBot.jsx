@@ -12,6 +12,8 @@ const ChatBox = () => {
         --df-messenger-font-color: white;
         --df-messenger-send-icon: #878fac;
         --df-messenger-user-message: #479b3d;
+        z-index: 1 !important;
+        position: relative;
       }
     `;
     document.head.appendChild(style);
