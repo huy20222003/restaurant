@@ -21,8 +21,6 @@ import {
 } from '../../../hooks/context';
 //utils
 import { fCurrency } from '../../../utils/formatNumber';
-//moment
-import { parse } from 'date-fns';
 //------------------------------------------------------------------
 
 const AdminDashboard = () => {

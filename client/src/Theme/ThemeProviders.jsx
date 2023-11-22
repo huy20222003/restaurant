@@ -14,7 +14,7 @@ import componentsOverride from './overrides';
 // ----------------------------------------------------------------------
 
 
-const ThemeProviders = ({ children })=> {
+export default function ThemeProviders ({ children }) {
   const themeOptions = useMemo(
     () => ({
       palette,
@@ -43,5 +43,3 @@ const ThemeProviders = ({ children })=> {
 ThemeProviders.propTypes = {
   children: PropTypes.node,
 };
-
-export default ThemeProviders;
