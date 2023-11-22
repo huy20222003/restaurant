@@ -10,6 +10,6 @@
     X-XSS-Protection = "1; mode=block"
 
 [[headers]]
-  for = "/*.js"
+  for = "/*.jsx"
   [headers.values]
     Content-Type = "application/javascript"
