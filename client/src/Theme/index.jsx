@@ -5,6 +5,7 @@ import { CssBaseline } from '@mui/material';
 import {
   ThemeProvider as MUIThemeProvider,
   createTheme,
+  StyledEngineProvider,
 } from '@mui/material/styles';
 //
 import palette from './palette';
@@ -16,7 +17,7 @@ import componentsOverride from './overrides';
 
 // ----------------------------------------------------------------------
 
-export default function ThemeProviders({ children }) {
+export default function ThemeProvider({ children }) {
   const themeOptions = useMemo(
     () => ({
       palette,
@@ -32,14 +33,16 @@ export default function ThemeProviders({ children }) {
   theme.components = componentsOverride(theme);
 
   return (
-    <MUIThemeProvider theme={theme}>
-      <CssBaseline />
-      <GlobalStyles />
-      {children}
-    </MUIThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <MUIThemeProvider theme={theme}>
+        <CssBaseline />
+        <GlobalStyles />
+        {children}
+      </MUIThemeProvider>
+    </StyledEngineProvider>
   );
 }
 
-ThemeProviders.propTypes = {
+ThemeProvider.propTypes = {
   children: PropTypes.node,
 };
