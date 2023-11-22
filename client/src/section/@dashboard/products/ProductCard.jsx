@@ -60,7 +60,7 @@ export default function ShopProductCard({ product }) {
       <Stack spacing={2} sx={{ p: 3 }}>
         <Typography variant="subtitle1" color="inherit">
           <Typography variant="subtitle2" noWrap>
-            {name}
+            {name} 
           </Typography>
         </Typography>
 

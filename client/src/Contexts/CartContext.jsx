@@ -39,6 +39,15 @@ export const CartProvider = (prop) => {
     }
   }, []);
 
+  const handleUpdateQuantity = useCallback(async(data)=> {
+    try {
+      const response = await cartApi.updateQuantity(data);
+      return response.data;
+    } catch (error) {
+      return handleError();
+    }
+  }, []);
+
   const handleDeleteProductFromCart = useCallback(async(productId)=> {
     try {
       const response = await cartApi.deleteProductFromCart(productId);
@@ -55,7 +64,9 @@ export const CartProvider = (prop) => {
     cartState,
     handleGetCart,
     handleUpdateCart,
-    handleDeleteProductFromCart
+    handleDeleteProductFromCart,
+    handleUpdateQuantity,
+    
   };
 
   return (

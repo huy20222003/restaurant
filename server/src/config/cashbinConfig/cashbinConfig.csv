@@ -17,6 +17,7 @@ p, employee, /api/v1/products/delete-product/:_id, DELETE
 #cart router
 p, user, /api/v1/cart, GET
 p, user, /api/v1/cart/update-cart, PUT
+p, user, /api/v1/cart/update-cart-quantity, PUT
 p, user, /api/v1/cart/update-cart/delete-product/:_id, DELETE
 
 #category router

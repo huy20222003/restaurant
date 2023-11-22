@@ -11,6 +11,7 @@ import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
+import AccountCoin from './AccountCoin';
 //context
 import { useAuth } from '../../../hooks/context';
 // ----------------------------------------------------------------------
@@ -72,6 +73,7 @@ export default function Header({ onOpenNav }) {
             sm: 1,
           }}
         >
+          {/* {isAuthenticated ? <AccountCoin /> : ''} */}
           <LanguagePopover />
           {isAuthenticated ? <NotificationsPopover /> : ''}
           <AccountPopover />

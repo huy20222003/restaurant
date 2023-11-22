@@ -112,6 +112,13 @@ class OrdersController {
 
       await newOrder.save();
 
+      for (const item of items) {
+        await Products.findByIdAndUpdate(
+          item.product._id,
+          { $inc: { quantity: -item.quantity } }
+        );
+      }      
+
       return res.status(200).json({
         success: true,
         message: 'Create order successful!',
@@ -204,13 +211,11 @@ class OrdersController {
           .json({ success: false, message: 'Order not found' });
       }
 
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: 'Updated order successful',
-          order: updatedOrder,
-        });
+      return res.status(200).json({
+        success: true,
+        message: 'Updated order successful',
+        order: updatedOrder,
+      });
     } catch (error) {
       return res.status(500).json({
         success: false,

@@ -117,7 +117,7 @@ const ProductInfo = ({ product }) => {
         <Typography variant="body2" sx={{ mb: '0.4rem' }}>
           Quantity
         </Typography>
-        <ProductQuantity />
+        <ProductQuantity product={product} />
       </Stack>
       {hasColor ? (
         <Stack
@@ -136,6 +136,7 @@ const ProductInfo = ({ product }) => {
               label="Colors"
               size="small"
               value={property.color || ''}
+              disabled={product?.quantity === 0}
               onChange={(e) => {
                 setProperty({
                   ...property,
@@ -166,6 +167,7 @@ const ProductInfo = ({ product }) => {
               label="Size"
               size="small"
               value={property.size || ''}
+              disabled={product?.quantity === 0}
               onChange={(e) => {
                 setProperty({
                   ...property,
@@ -187,7 +189,7 @@ const ProductInfo = ({ product }) => {
           onClick={handleUpdate}
           startIcon={<AddShoppingCartIcon />}
           disabled={
-            (hasColor && !isColorSelected) || (hasSize && !isSizeSelected)
+            (hasColor && !isColorSelected) || (hasSize && !isSizeSelected) || product?.quantity === 0
           }
         >
           Add to cart
@@ -197,7 +199,7 @@ const ProductInfo = ({ product }) => {
           variant="contained"
           onClick={handleNavigateCart}
           disabled={
-            (hasColor && !isColorSelected) || (hasSize && !isSizeSelected)
+            (hasColor && !isColorSelected) || (hasSize && !isSizeSelected) || product?.quantity === 0
           }
         >
           Buy now
@@ -219,6 +221,7 @@ ProductInfo.propTypes = {
     description: PropTypes.string,
     color: PropTypes.arrayOf(PropTypes.string),
     size: PropTypes.arrayOf(PropTypes.string),
+    quantity: PropTypes.number,
   }),
 };
 

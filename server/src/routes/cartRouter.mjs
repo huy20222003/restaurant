@@ -10,6 +10,7 @@ import CartsController from '../app/controllers/CartsController.mjs';
 
 router.get('/', authVerify, cashbinMiddleware,  CartsController.getUserCart);
 router.put('/update-cart', authVerify, cashbinMiddleware, CartsController.updateCart);
+router.put('/update-cart-quantity', authVerify, cashbinMiddleware, CartsController.updateQuantity);
 router.delete('/update-cart/delete-product/:_id', authVerify, cashbinMiddleware, CartsController.deleteProductFromCart);
 
 export default router;

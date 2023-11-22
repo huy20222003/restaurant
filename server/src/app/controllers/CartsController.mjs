@@ -71,6 +71,39 @@ class CartController {
     }
   }
 
+  async updateQuantity(req, res) {
+    const { productId, quantity } = req.body;
+  
+    try {
+      const cart = await Cart.findById(req.user._id);
+  
+      if (!cart) {
+        return res.status(400).json({ success: false, message: 'Cart not found' });
+      }
+  
+      const cartItem = cart.items.find(item => item.product.equals(productId));
+  
+      if (cartItem) {
+        cartItem.quantity += quantity;
+      } 
+  
+      const updatedCart = await cart.save();
+  
+      return res.status(200).json({
+        success: true,
+        message: 'Quantity updated successfully',
+        cart: updatedCart,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'An error occurred while processing the request.',
+        error: error.message,
+      });
+    }
+  }
+  
+
   async deleteProductFromCart(req, res) {
     try {
       const userId = req.user._id;

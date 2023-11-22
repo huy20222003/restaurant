@@ -2,7 +2,6 @@ import { GET_CART, UPDATE_CART } from "./constants";
 
 export const initCartState = {
     items: [], 
-    totalPrices: 0, 
     userCart: null, 
     property: []
   };
@@ -15,14 +14,12 @@ export const initCartState = {
         return {
           ...state,
           items: payload.items,
-          totalPrices: payload.totalPrices,
           userCart: payload.userCart,
         };
         case UPDATE_CART:
         return {
           ...state,
           items: payload.items,
-          totalPrices: payload.totalPrices,
           userCart: payload.userCart,
         };
       default:
