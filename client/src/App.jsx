@@ -3,7 +3,7 @@ import { HelmetProvider } from 'react-helmet-async';
 // routes
 import Router from './routers/routes';
 // theme
-import ThemeProvider from './theme/index';
+import ThemeProvider from './theme';
 // components
 import ScrollToTop from './Components/User/scroll-to-top';
 //ToastContainer
