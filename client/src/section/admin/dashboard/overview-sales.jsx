@@ -10,9 +10,12 @@ import {
   Divider,
   SvgIcon,
 } from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
-import { Chart } from '../../../Components/Admin/chart/Chart';
+import { alpha, useTheme, styled } from '@mui/material/styles';
+import ApexChart from 'react-apexcharts';
 //---------------------------------------------
+
+
+const Chart = styled(ApexChart)``;
 
 const useChartOptions = () => {
   const theme = useTheme();

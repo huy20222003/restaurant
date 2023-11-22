@@ -12,7 +12,12 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { Chart } from '../../../Components/Admin/chart/Chart';
+import { styled } from '@mui/material/styles';
+import ApexChart from 'react-apexcharts';
+
+//-------------------------------------------
+
+const Chart = styled(ApexChart)``;
 
 const useChartOptions = (labels) => {
   const theme = useTheme();
