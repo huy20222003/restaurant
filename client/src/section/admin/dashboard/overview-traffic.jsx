@@ -12,7 +12,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { Chart } from '../../../Components/Admin/chart/chart';
+import { Chart } from '../../../Components/Admin/chart/Chart';
 
 const useChartOptions = (labels) => {
   const theme = useTheme();
